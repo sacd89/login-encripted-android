@@ -44,7 +44,6 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="#2196F3"
-                    android:textColorHighlight="#2196F3"
                     android:textColorHint="#2196F3" />
 
             </android.support.design.widget.TextInputLayout>
@@ -65,7 +64,6 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="#2196F3"
-                    android:textColorHighlight="#2196F3"
                     android:textColorHint="#2196F3" />
 
             </android.support.design.widget.TextInputLayout>

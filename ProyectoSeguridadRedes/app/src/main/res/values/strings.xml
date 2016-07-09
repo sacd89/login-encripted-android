@@ -10,5 +10,6 @@
     <string name="error_invalid_password">La Contraseña es demasiado corta.</string>
     <string name="error_incorrect_password">La Contraseña es incorrecta.</string>
     <string name="error_field_required">Este elemento es requerido.</string>
+    <string name="logout">Cerrar Sesión</string>
 
 </resources>
