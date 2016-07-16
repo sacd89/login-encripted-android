@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         mensaje.setText("Has iniciado sesión como: " + bundle.getString("nombre") + " " +
         bundle.getString("paterno")+ " " + bundle.getString("materno"));
 
+
     }
 
     @Override
@@ -46,4 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+
 }

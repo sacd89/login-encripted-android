@@ -32,12 +32,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.SSLContext;
 
 import seguridad_redes.uach.mx.proyectoseguridadredes.models.Usuario;
 import seguridad_redes.uach.mx.proyectoseguridadredes.utils.ReadJson;
@@ -69,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private Socket socket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +97,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    try {
+                        attemptLogin();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 }
                 return false;
@@ -98,7 +112,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                try {
+                    attemptLogin();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -109,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptLogin() throws MalformedURLException {
 
 
         // Reset errors.
@@ -146,9 +164,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // form field with an error.
             //focusView.requestFocus();
         }else{
-            Usuario usuario =getUsuario(mEmailView.getText().toString(), mPasswordView.getText().toString());
+            final Usuario usuario =getUsuario(mEmailView.getText().toString(), mPasswordView.getText().toString());
             if(usuario != null && usuario.getNombre() != null){
-                ejecutar(usuario);
+
+                try {
+                    socket = IO.socket("https://login-encripted.herokuapp.com");
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+                    @Override
+                    public void call(Object... args) {
+                        System.out.println("Se conecto");
+                        socket.emit("echo", "hello");
+                    }
+
+                }).on("echo back", new Emitter.Listener(){
+                    @Override
+                    public void call(Object... args) {
+                        System.out.println("Respuesta de Socket");
+                        ejecutar(usuario);
+                        //Toast.makeText(LoginActivity.this , "Respuesta de Sockets", Toast.LENGTH_LONG).show();
+
+                    }
+                }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+
+                    @Override
+                    public void call(Object... args) {
+                        System.out.println("Se desconecto");
+                    }
+
+                });
+                socket.connect();
                 super.onPause();
                 finish();
             } else {
