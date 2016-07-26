@@ -30,6 +30,19 @@ public class ReadJson {
         return json;
     }
 
+    public static String read(String url){
+        String json = "{}";
+        try {
+            URL ruta = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) ruta.openConnection();
+            json = transformBuffer(con.getInputStream()).toString();
+        }catch (Exception ex){
+            Log.w("Error", "No se puede leer el servicio.");
+            json = "null";
+        }
+        return json;
+    }
+
     public static String transformBuffer(InputStream in){
         String linea = "";
         BufferedReader reader = null;

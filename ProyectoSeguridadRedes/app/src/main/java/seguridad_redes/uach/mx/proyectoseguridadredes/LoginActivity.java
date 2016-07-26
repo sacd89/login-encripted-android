@@ -3,6 +3,7 @@ package seguridad_redes.uach.mx.proyectoseguridadredes;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -78,12 +79,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private Socket socket;
+    //private Socket socket;
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private int REQUEST_ENABLE_BT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -167,7 +174,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             final Usuario usuario =getUsuario(mEmailView.getText().toString(), mPasswordView.getText().toString());
             if(usuario != null && usuario.getNombre() != null){
 
-                try {
+                /*try {
                     socket = IO.socket("https://login-encripted.herokuapp.com");
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
@@ -196,7 +203,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
 
                 });
-                socket.connect();
+                socket.connect();*/
+                ejecutar(usuario);
                 super.onPause();
                 finish();
             } else {
