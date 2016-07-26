@@ -275,7 +275,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void ejecutar(Usuario usuario) {
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, TabsActivity.class);
         i.putExtra("nombre", usuario.getNombre());
         i.putExtra("paterno", usuario.getPaterno());
         i.putExtra("materno", usuario.getMaterno());

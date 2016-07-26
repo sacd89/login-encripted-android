@@ -36,13 +36,17 @@ public class MainActivity extends AppCompatActivity implements ScannerDelegate {
     public static String URL_PENDIENTE;
     private ListView lstVwUsuarios;
     List<Pendiente> pendientes;
+    private String usuario;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Bundle bundle = getIntent().getExtras();
+        Bundle bundle = getIntent().getExtras();
+        usuario = bundle.getString("nombre") + " " +
+                       bundle.getString("paterno")+ " " + bundle.getString("materno");
+        System.out.println("usuario = " + usuario);
         //mensaje = (TextView) findViewById(R.id.txtVwMensaje);
         //mensaje.setText("Has iniciado sesión como: " + bundle.getString("nombre") + " " +
         //        bundle.getString("paterno")+ " " + bundle.getString("materno"));
