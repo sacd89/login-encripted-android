@@ -54,10 +54,6 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
     public static String usuario;
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -77,6 +73,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabs);
+        System.out.println("mBluetoothAdapter = " + mBluetoothAdapter);
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -117,7 +114,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
 
         Bundle bundle = getIntent().getExtras();
         usuario = bundle.getString("nombre") + " " +
-                bundle.getString("paterno")+ " " + bundle.getString("materno");
+                bundle.getString("paterno") + " " + bundle.getString("materno");
         System.out.println("usuario = " + usuario);
         getSupportActionBar().setTitle(usuario);
 
@@ -128,6 +125,10 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
             for (Pendiente item : items) {
                 items.add(new Pendiente());
             }
+
+            //items = new ArrayList<>();
+            //items.add(new Pendiente("Hacer popo", "26/07/16", 1, false));
+
             // Obtener el Recycler
             recycler = (RecyclerView) findViewById(R.id.reciclador);
             recycler.setHasFixedSize(true);
@@ -145,6 +146,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
     @Override
     public void eddytoneNearbyDidChange() {
         mUrls = Arrays.asList(Scanner.nearbyUrls());
+        System.out.println("mBeaconAdapter = " + mBeaconAdapter);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -152,6 +154,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
                 mBeaconAdapter.addAll(mUrls);
             }
         });
+        
         System.out.println("mUrls = " + mUrls.size());
         for (Url url : mUrls) {
             String str = url.getUrl().toString();
