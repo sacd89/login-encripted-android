@@ -2,15 +2,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="layout.TareasPendientes">
+    tools:context="layout.TareasPendientes"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:id="@+id/rwPendientes">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cwPendientes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
+            card_view:contentPadding="15dp">
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.v7.widget.RecyclerView>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="PENDIENTES"
-        android:id="@+id/textView3"
-        android:layout_gravity="center" />
+
 
 </FrameLayout>

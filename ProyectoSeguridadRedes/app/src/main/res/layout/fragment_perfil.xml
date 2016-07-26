@@ -1,14 +1,78 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="layout.Perfil">
+    tools:context="layout.Perfil"
+    android:padding="10dp"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cwUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
+            card_view:contentPadding="15dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/txtVwMensaje"
+            android:layout_gravity="center"/>
+
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/cwPendientes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    card_view:cardElevation="5dp"
+                    card_view:cardBackgroundColor="#607D8B"
+                    app:cardUseCompatPadding="true"
+                    card_view:contentPadding="25dp">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/txtVwMensaje"
-        android:layout_gravity="center" />
-</FrameLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:id="@+id/txtVwPendientes"
+                            android:layout_gravity="center"
+                            android:textColor="#FFFFFF"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/cvRealizadas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    card_view:cardElevation="5dp"
+                    card_view:cardBackgroundColor="#607D8B"
+                    app:cardUseCompatPadding="true"
+                    card_view:contentPadding="25dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:id="@+id/txtVwRealizadas"
+                            android:layout_gravity="center"
+                            android:textColor="#FFFFFF"/>
+
+                </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+
+
+</LinearLayout>

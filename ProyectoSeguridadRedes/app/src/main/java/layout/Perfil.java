@@ -71,10 +71,6 @@ public class Perfil extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_perfil, container, false);
-        TextView mensaje = (TextView) view.findViewById(R.id.txtVwMensaje);
-        System.out.println(TabsActivity.usuario);
-        //mensaje.setText("Has iniciado sesión como : " + TabsActivity.usuario);
-        mensaje.setText("popp");
         return view;
     }
 

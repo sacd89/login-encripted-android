@@ -1,5 +1,6 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -37,16 +38,24 @@ public class TabsActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     public static String usuario;
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private int REQUEST_ENABLE_BT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabs);
-
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
         final int[] ICONS = new int[]{
                 R.drawable.ic_assignment_white_24dp,
-                R.drawable.ic_assignment_turned_in_white_24dp,
-                R.drawable.ic_account_white_24dp
+                R.drawable.ic_assignment_turned_in_white_24dp
+        };
+
+        final String[] TITLES = new String[]{
+                "Tareas Pendientes","Tareas Realizadas", "Perfil"
         };
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -64,7 +73,7 @@ public class TabsActivity extends AppCompatActivity {
 
         tabLayout.getTabAt(0).setIcon(ICONS[0]);
         tabLayout.getTabAt(1).setIcon(ICONS[1]);
-        tabLayout.getTabAt(2).setIcon(ICONS[2]);
+        //tabLayout.getTabAt(2).setIcon(ICONS[2]);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +88,7 @@ public class TabsActivity extends AppCompatActivity {
         usuario = bundle.getString("nombre") + " " +
                 bundle.getString("paterno")+ " " + bundle.getString("materno");
         System.out.println("usuario = " + usuario);
+        getSupportActionBar().setTitle(usuario);
 
     }
 
@@ -139,13 +149,19 @@ public class TabsActivity extends AppCompatActivity {
             if(getArguments().getInt(ARG_SECTION_NUMBER)==1) {
                 View rootView = inflater.inflate(R.layout.fragment_tareas_pendientes, container, false);
                 return rootView;
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER)==2){
+            }else{
                 View rootView = inflater.inflate(R.layout.fragment_tareas_realizadas, container, false);
                 return rootView;
-            }else{
+            }/*else{
                 View rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
+                TextView user = (TextView) rootView.findViewById(R.id.txtVwMensaje);
+                TextView pendientes = (TextView) rootView.findViewById(R.id.txtVwPendientes);
+                TextView realizadas = (TextView) rootView.findViewById(R.id.txtVwRealizadas);
+                user.setText(usuario);
+                pendientes.setText("5\nPendientes");
+                realizadas.setText("2\nRealizadas");
                 return rootView;
-            }
+            }*/
         }
     }
 
@@ -169,7 +185,7 @@ public class TabsActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
        /* @Override
