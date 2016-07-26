@@ -1,5 +1,6 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -37,12 +38,18 @@ public class MainActivity extends AppCompatActivity implements ScannerDelegate {
     private ListView lstVwUsuarios;
     List<Pendiente> pendientes;
     private String usuario;
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private int REQUEST_ENABLE_BT = 1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
         Bundle bundle = getIntent().getExtras();
         usuario = bundle.getString("nombre") + " " +
                        bundle.getString("paterno")+ " " + bundle.getString("materno");
