@@ -42,13 +42,16 @@ public class MainActivity extends AppCompatActivity implements ScannerDelegate {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Bundle bundle = getIntent().getExtras();
+        //Bundle bundle = getIntent().getExtras();
+        //mensaje = (TextView) findViewById(R.id.txtVwMensaje);
+        //mensaje.setText("Has iniciado sesión como: " + bundle.getString("nombre") + " " +
+        //        bundle.getString("paterno")+ " " + bundle.getString("materno"));
+        ListView beaconListView = (ListView) findViewById(R.id.beaconListView);
+        mBeaconAdapter = new BeaconAdapter(this, R.layout.beacon_list_item, mUrls);
+        beaconListView.setAdapter(mBeaconAdapter);
         Global.logging = true;
         Global.expireTimer = 30000;
         Scanner.start(this);
-        mensaje = (TextView) findViewById(R.id.txtVwMensaje);
-        mensaje.setText("Has iniciado sesión como: " + bundle.getString("nombre") + " " +
-        bundle.getString("paterno")+ " " + bundle.getString("materno"));
         this.lstVwUsuarios = (ListView) findViewById(R.id.lstVwUsuarios);
     }
 

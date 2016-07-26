@@ -24,14 +24,14 @@ public class BeaconAdapter extends ArrayAdapter<Url>{
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(resourceId, parent, false);
 
-        //TextView urlView = (TextView) row.findViewById(R.id.urlView);
+        TextView urlView = (TextView) row.findViewById(R.id.urlView);
 //        TextView batteryView = (TextView) row.findViewById(R.id.batteryView);
 //        TextView temperatureView = (TextView) row.findViewById(R.id.temperatureView);
 //        TextView advertisementCountView = (TextView) row.findViewById(R.id.advertisementCountView);
 //        TextView onTimeView = (TextView) row.findViewById(R.id.onTimeView);
 
-        //Url url = urls.get(position);
-        //urlView.setText(url.getUrl().toString());
+        Url url = urls.get(position);
+        urlView.setText(url.getUrl().toString());
 
 //        if(url.getBattery() != null && url.getTemperature() != null && url.getAdvertisementCount() != null && url.getOnTime() != null){
 //
