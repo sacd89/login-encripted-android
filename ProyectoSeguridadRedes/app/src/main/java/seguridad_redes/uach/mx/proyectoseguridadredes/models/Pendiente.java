@@ -17,7 +17,7 @@ public class Pendiente {
     /**
      * {@code String} Nivel de prioridad para el Pendiente.
      */
-    String prioridad;
+    Integer prioridad;
 
     /**
      * {@code Boolean} Determina si ha sido terminado
@@ -39,7 +39,7 @@ public class Pendiente {
      * @param prioridad {@code String} Nivel de prioridad para el Pendiente
      * @param terminado {@code Boolean} Determina si ha sido terminado o no el pendiente
      */
-    public Pendiente(String descripcion, String fecha, String prioridad, Boolean terminado) {
+    public Pendiente(String descripcion, String fecha, Integer prioridad, Boolean terminado) {
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.prioridad = prioridad;
@@ -87,7 +87,7 @@ public class Pendiente {
      *
      * @return String prioridad
      */
-    public String getPrioridad() {
+    public Integer getPrioridad() {
         return prioridad;
     }
 
@@ -96,7 +96,7 @@ public class Pendiente {
      *
      * @param prioridad String prioridad
      */
-    public void setPrioridad(String prioridad) {
+    public void setPrioridad(Integer prioridad) {
         this.prioridad = prioridad;
     }
 

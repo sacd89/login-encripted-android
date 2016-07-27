@@ -1,20 +1,7 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v7.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/reciclador"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="layout.TareasPendientes"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:id="@+id/rwPendientes">
-
-
-    </android.support.v7.widget.RecyclerView>
-
-
-
-
-</FrameLayout>
+    android:padding="3dp"
+    android:scrollbars="vertical" />

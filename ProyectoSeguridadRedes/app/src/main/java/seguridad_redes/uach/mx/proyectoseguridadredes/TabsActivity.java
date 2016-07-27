@@ -2,10 +2,13 @@ package seguridad_redes.uach.mx.proyectoseguridadredes;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -13,15 +16,34 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class TabsActivity extends AppCompatActivity {
+import com.bluebite.android.eddystone.Global;
+import com.bluebite.android.eddystone.Scanner;
+import com.bluebite.android.eddystone.ScannerDelegate;
+import com.bluebite.android.eddystone.Url;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import seguridad_redes.uach.mx.proyectoseguridadredes.models.Pendiente;
+import seguridad_redes.uach.mx.proyectoseguridadredes.utils.ReadJson;
+
+public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -32,30 +54,36 @@ public class TabsActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
     public static String usuario;
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private int REQUEST_ENABLE_BT = 1;
+    private RecyclerView recycler;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager lManager;
+    private static List<Pendiente> items;
+    private BeaconAdapter mBeaconAdapter;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private List<Url> mUrls = new ArrayList<>();
+    private ListView lstVwUsuarios;
+    public static String URL_PENDIENTE;
+    List<Pendiente> pendientes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabs);
+        System.out.println("mBluetoothAdapter = " + mBluetoothAdapter);
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+        Global.logging = true;
+        Global.expireTimer = 30000;
+        Scanner.start(this);
         final int[] ICONS = new int[]{
                 R.drawable.ic_assignment_white_24dp,
                 R.drawable.ic_assignment_turned_in_white_24dp
-        };
-
-        final String[] TITLES = new String[]{
-                "Tareas Pendientes","Tareas Realizadas", "Perfil"
         };
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -86,10 +114,87 @@ public class TabsActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         usuario = bundle.getString("nombre") + " " +
-                bundle.getString("paterno")+ " " + bundle.getString("materno");
+                bundle.getString("paterno") + " " + bundle.getString("materno");
         System.out.println("usuario = " + usuario);
         getSupportActionBar().setTitle(usuario);
 
+        items = getPendientes();
+        if(items == null){
+            Toast.makeText(this,"No tienes tareas pendientes", Toast.LENGTH_LONG);
+        }else {
+            for (Pendiente item : items) {
+                items.add(new Pendiente());
+            }
+
+            //items = new ArrayList<>();
+            //items.add(new Pendiente("Hacer popo", "26/07/16", 1, false));
+
+            // Obtener el Recycler
+            recycler = (RecyclerView) findViewById(R.id.reciclador);
+            recycler.setHasFixedSize(true);
+
+            // Usar un administrador para LinearLayout
+            lManager = new LinearLayoutManager(this);
+            recycler.setLayoutManager(lManager);
+
+            // Crear un nuevo adaptador
+            adapter = new PendienteAdapter(items);
+            recycler.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void eddytoneNearbyDidChange() {
+        mUrls = Arrays.asList(Scanner.nearbyUrls());
+        System.out.println("mBeaconAdapter = " + mBeaconAdapter);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mBeaconAdapter.clear();
+                mBeaconAdapter.addAll(mUrls);
+            }
+        });
+        
+        System.out.println("mUrls = " + mUrls.size());
+        for (Url url : mUrls) {
+            String str = url.getUrl().toString();
+            System.out.println("str = " + str);
+            if (str.equals("http://bit.ly/2a2QDMc") || true) {
+                URL_PENDIENTE = str;
+                pendientes = getPendientes();
+                ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
+                        android.R.layout.activity_list_item, android.R.id.text1, pendientes);
+                this.lstVwUsuarios.setAdapter(adapter);
+            }
+            System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
+
+        }
+    }
+
+    public List<Pendiente> getPendientes(){
+        ConnectServer server = new ConnectServer();
+        server.execute();
+        List<Pendiente> pendientes = new ArrayList<>();
+
+        try {
+            String json = server.get();
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<Pendiente>>(){}.getType();
+            pendientes = gson.fromJson(json, listType);
+        } catch (Exception e){
+            Log.e("Error", "No pude leer el JSON.");
+        }
+
+        return pendientes;
+    }
+
+    private class ConnectServer extends AsyncTask<Void, Integer, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            String json = ReadJson.read(URL_PENDIENTE);
+            System.out.println("json = " + json);
+            return json;
+        }
     }
 
 
