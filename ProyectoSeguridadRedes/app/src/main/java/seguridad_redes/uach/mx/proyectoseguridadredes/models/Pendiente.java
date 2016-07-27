@@ -46,6 +46,16 @@ public class Pendiente {
         this.terminado = terminado;
     }
 
+    public Pendiente(String descripcion, Integer prioridad){
+        this.descripcion = descripcion;
+        this.prioridad = prioridad;
+    }
+
+    public Pendiente(String descripcion, String fecha){
+        this.descripcion = descripcion;
+        this.fecha = fecha;
+    }
+
     /**
      * Regresa el campo incluido en el nombre del mismo método.
      *

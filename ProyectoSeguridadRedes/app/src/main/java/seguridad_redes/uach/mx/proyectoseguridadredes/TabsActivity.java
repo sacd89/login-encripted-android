@@ -38,7 +38,7 @@ import java.util.List;
 import seguridad_redes.uach.mx.proyectoseguridadredes.models.Pendiente;
 import seguridad_redes.uach.mx.proyectoseguridadredes.utils.ReadJson;
 
-public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
+public class TabsActivity extends AppCompatActivity {//implements ScannerDelegate {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -53,10 +53,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
     public static String usuario;
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private int REQUEST_ENABLE_BT = 1;
-    private RecyclerView recycler;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager lManager;
-    private static List<Pendiente> items;
+    public static List<Pendiente> items;
     private BeaconAdapter mBeaconAdapter;
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<Url> mUrls = new ArrayList<>();
@@ -71,9 +68,9 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-        Global.logging = true;
-        Global.expireTimer = 30000;
-        Scanner.start(this);
+        //Global.logging = true;
+        //Global.expireTimer = 30000;
+        //Scanner.start(this);
         final int[] ICONS = new int[]{
                 R.drawable.ic_assignment_white_24dp,
                 R.drawable.ic_assignment_turned_in_white_24dp
@@ -110,8 +107,14 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
                 bundle.getString("paterno") + " " + bundle.getString("materno");
         System.out.println("usuario = " + usuario);
         getSupportActionBar().setTitle(usuario);
-
+        System.out.println("getPendientes() = " + getPendientes());
+        for(int i = 0; i<getPendientes().size(); i++){
+            if(getPendientes().get(i) == null){
+                getPendientes().remove(getPendientes().get(i));
+            }
+        }
         items = getPendientes();
+        System.out.println("items tabsActi = " + items);
         //if(items == null){
         //    Toast.makeText(this,"No tienes tareas pendientes", Toast.LENGTH_LONG);
         //}else {
@@ -128,7 +131,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
         //    recycler.setHasFixedSize(true);
 
             // Usar un administrador para LinearLayout
-            lManager = new LinearLayoutManager(this);
+            //lManager = new LinearLayoutManager(this);
         //    recycler.setLayoutManager(lManager);
 
             // Crear un nuevo adaptador
@@ -141,32 +144,11 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tareas_pendientes, container, false);
-        recycler = (RecyclerView) findViewById(R.id.reciclador);
-        System.out.println("recycler = " + recycler);
-        recycler.setHasFixedSize(true);
-
-        for (Pendiente item : items) {
-            System.out.println("item.getDescripcion() = " + item.getDescripcion());
-            System.out.println("item.getPrioridad() = " + item.getPrioridad());
-        }
-
-        // Usar un administrador para LinearLayout
-        lManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(lManager);
-
-        // Crear un nuevo adaptador
-        adapter = new PendienteAdapter(items);
-
-        recycler.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        System.out.println("recycler = " + recycler.getAdapter());
-        recycler.setHovered(true);
-        System.out.println("recycler = " + recycler);
 
         return view;
     }
 
-    @Override
+    /*@Override
     public void eddytoneNearbyDidChange() {
         mUrls = Arrays.asList(Scanner.nearbyUrls());
         System.out.println("mBeaconAdapter = " + mBeaconAdapter);
@@ -184,11 +166,11 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
             String str = url.getUrl().toString();
             URL_PENDIENTE = str;
             items = getPendientes();
-            if (items != null) {
-                ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
-                        android.R.layout.activity_list_item, android.R.id.text1, items);
+            //if (items != null) {
+             //   ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
+               //         android.R.layout.activity_list_item, android.R.id.text1, items);
 //                this.lstVwUsuarios.setAdapter(adapter);
-            }
+            //}
             System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
 
         }
@@ -205,7 +187,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
 //            System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
 //
 //        }
-    }
+    }*/
 
     public List<Pendiente> getPendientes(){
         System.out.println("MAMA MIA!!!!");
@@ -286,6 +268,9 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private RecyclerView recycler;
+        private RecyclerView.Adapter adapter;
+        private RecyclerView.LayoutManager lManager;
 
         public PlaceholderFragment() {
         }
@@ -306,11 +291,67 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             if(getArguments().getInt(ARG_SECTION_NUMBER)==1) {
-                View rootView = inflater.inflate(R.layout.fragment_tareas_pendientes, container, false);
-                return rootView;
+                View view = inflater.inflate(R.layout.fragment_tareas_pendientes, container, false);
+                List<Pendiente> items = new ArrayList<>();
+
+                items.add(new Pendiente("Terminar Proyect", 1));
+                items.add(new Pendiente("Estudiar para examen", 1));
+                items.add(new Pendiente("Ir al parque", 2));
+                items.add(new Pendiente("Hacer popo", 3));
+                items.add(new Pendiente("Ver tele", 3));
+                recycler = (RecyclerView) view.findViewById(R.id.reciclador);
+                System.out.println("recycler = " + recycler);
+                recycler.setHasFixedSize(true);
+
+                /*for (Pendiente item : TabsActivity.items) {
+                    System.out.println("item.getDescripcion() = " + item.getDescripcion());
+                    System.out.println("item.getPrioridad() = " + item.getPrioridad());
+                    TabsActivity.items.add(new Pendiente());
+                }*/
+
+                // Usar un administrador para LinearLayout
+                lManager = new LinearLayoutManager(getActivity());
+                recycler.setLayoutManager(lManager);
+
+                // Crear un nuevo adaptador
+                adapter = new PendienteAdapter(items);
+
+                recycler.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                System.out.println("recycler = " + recycler.getAdapter());
+                recycler.setHovered(true);
+                System.out.println("recycler = " + recycler);
+                return view;
             }else{
-                View rootView = inflater.inflate(R.layout.fragment_tareas_realizadas, container, false);
-                return rootView;
+                View view = inflater.inflate(R.layout.fragment_tareas_realizadas, container, false);
+                List<Pendiente> items = new ArrayList<>();
+
+                items.add(new Pendiente("Hacer tarea", "11/04/16"));
+                items.add(new Pendiente("Estudiar para examen de chito", "04/03/16"));
+                items.add(new Pendiente("Recoger casa", "07/02/16"));
+                recycler = (RecyclerView) view.findViewById(R.id.reciclador);
+                System.out.println("recycler = " + recycler);
+                recycler.setHasFixedSize(true);
+
+                /*for (Pendiente item : TabsActivity.items) {
+                    System.out.println("item.getDescripcion() = " + item.getDescripcion());
+                    System.out.println("item.getPrioridad() = " + item.getPrioridad());
+                    TabsActivity.items.add(new Pendiente());
+                }*/
+
+                // Usar un administrador para LinearLayout
+                lManager = new LinearLayoutManager(getActivity());
+                recycler.setLayoutManager(lManager);
+
+                // Crear un nuevo adaptador
+                adapter = new RealizadaAdapter(items);
+
+                recycler.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                System.out.println("recycler = " + recycler.getAdapter());
+                recycler.setHovered(true);
+                System.out.println("recycler = " + recycler);
+                return view;
             }/*else{
                 View rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
                 TextView user = (TextView) rootView.findViewById(R.id.txtVwMensaje);

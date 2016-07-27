@@ -12,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import seguridad_redes.uach.mx.proyectoseguridadredes.PendienteAdapter;
 import seguridad_redes.uach.mx.proyectoseguridadredes.R;
+import seguridad_redes.uach.mx.proyectoseguridadredes.TabsActivity;
 import seguridad_redes.uach.mx.proyectoseguridadredes.models.Pendiente;
 
 /**
