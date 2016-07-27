@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.bluebite.android.eddystone.Global;
 import com.bluebite.android.eddystone.Scanner;
@@ -70,7 +71,6 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
         Global.logging = true;
         Global.expireTimer = 30000;
         Scanner.start(this);
@@ -182,17 +182,29 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
         System.out.println("mUrls = " + mUrls.size());
         for (Url url : mUrls) {
             String str = url.getUrl().toString();
-            System.out.println("str = " + str);
-            if (str.equals("http://bit.ly/2a2QDMc") || true) {
-                URL_PENDIENTE = str;
-                items = getPendientes();
-                //ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
-                //        android.R.layout.activity_list_item, android.R.id.text1, pendientes);
-                //this.lstVwUsuarios.setAdapter(adapter);
+            URL_PENDIENTE = str;
+            items = getPendientes();
+            if (items != null) {
+                ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
+                        android.R.layout.activity_list_item, android.R.id.text1, items);
+//                this.lstVwUsuarios.setAdapter(adapter);
             }
             System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
 
         }
+//        for (Url url : mUrls) {
+//            String str = url.getUrl().toString();
+//            System.out.println("str = " + str);
+//            if (str.equals("http://bit.ly/2a2QDMc") || true) {
+//                URL_PENDIENTE = str;
+//                items = getPendientes();
+//                //ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
+//                //        android.R.layout.activity_list_item, android.R.id.text1, pendientes);
+//                //this.lstVwUsuarios.setAdapter(adapter);
+//            }
+//            System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
+//
+//        }
     }
 
     public List<Pendiente> getPendientes(){
@@ -207,7 +219,6 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
             Gson gson = new Gson();
             Type listType = new TypeToken<List<Pendiente>>(){}.getType();
             pendientes = gson.fromJson(json, listType);
-            System.out.println("pendientes = " + pendientes);
         } catch (Exception e){
             Log.e("Error", "No pude leer el JSON.");
         }
@@ -221,9 +232,23 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
             System.out.println("parameters[0] = " + parameters[0]);
             String json = ReadJson.readTODOS(parameters[0]);
             System.out.println("json = " + json);
-            return json;
-        }
 
+            //String json;
+            //try {
+            //    java.net.URL newUrl = new URL(URL_PENDIENTE);
+            //    final HttpURLConnection urlConnection = (HttpURLConnection) newUrl.openConnection();
+            //    urlConnection.setInstanceFollowRedirects(false);
+            //    final String location = urlConnection.getHeaderField("location");
+            //    System.out.println("location = " + location);
+            //    json = ReadJson.read(URL_PENDIENTE);
+            //    System.out.println("json = " + json);
+            //} catch (Exception e) {
+            //    json = "{}";
+            //    System.out.println("ConnectServer error = " + e);
+            //}
+            return json;
+
+        }
     }
 
 
