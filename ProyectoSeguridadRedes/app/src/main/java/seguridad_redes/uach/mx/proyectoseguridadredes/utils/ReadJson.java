@@ -16,6 +16,7 @@ public class ReadJson {
 
     private final static String DOMAIN = "https://login-encripted.herokuapp.com";
     public final static String URL_LOGIN = String.format("%s/webservice", DOMAIN);
+    public final static String URL_TODOS = String.format("%s/todos/user", DOMAIN);
 
     public static String logIn(String correo, String pass){
         String json = "{}";
@@ -23,6 +24,20 @@ public class ReadJson {
             URL ruta = new URL(ReadJson.URL_LOGIN + "/" + correo + "/" + pass);
             HttpURLConnection con = (HttpURLConnection) ruta.openConnection();
             json = transformBuffer(con.getInputStream()).toString();
+        }catch (Exception ex){
+            Log.w("Error", "No se puede leer el servicio.");
+            json = "null";
+        }
+        return json;
+    }
+
+    public static String readTODOS(String idUsuario){
+        String json = "{}";
+        try {
+            URL ruta = new URL(ReadJson.URL_TODOS + "/" + idUsuario);
+            HttpURLConnection con = (HttpURLConnection) ruta.openConnection();
+            json = transformBuffer(con.getInputStream()).toString();
+            System.out.println("json = " + json);
         }catch (Exception ex){
             Log.w("Error", "No se puede leer el servicio.");
             json = "null";

@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bluebite.android.eddystone.Global;
 import com.bluebite.android.eddystone.Scanner;
@@ -71,6 +70,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+
         Global.logging = true;
         Global.expireTimer = 30000;
         Scanner.start(this);
@@ -111,29 +111,59 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
         System.out.println("usuario = " + usuario);
         getSupportActionBar().setTitle(usuario);
 
-        //items = getPendientes();
-        if(items == null){
-            Toast.makeText(this,"No tienes tareas pendientes", Toast.LENGTH_LONG);
-        }else {
-            for (Pendiente item : items) {
-                items.add(new Pendiente());
-            }
-
+        items = getPendientes();
+        //if(items == null){
+        //    Toast.makeText(this,"No tienes tareas pendientes", Toast.LENGTH_LONG);
+        //}else {
+        //    //for (Pendiente item : items) {
+        //    //    items.add(new Pendiente());
+        //    //}
+        //
             //items = new ArrayList<>();
             //items.add(new Pendiente("Hacer popo", "26/07/16", 1, false));
 
             // Obtener el Recycler
-            recycler = (RecyclerView) findViewById(R.id.reciclador);
-            recycler.setHasFixedSize(true);
+        //    recycler = (RecyclerView) findViewById(R.id.reciclador);
+        //    System.out.println("recycler = " + recycler);
+        //    recycler.setHasFixedSize(true);
 
             // Usar un administrador para LinearLayout
             lManager = new LinearLayoutManager(this);
-            recycler.setLayoutManager(lManager);
+        //    recycler.setLayoutManager(lManager);
 
             // Crear un nuevo adaptador
-            adapter = new PendienteAdapter(items);
-            recycler.setAdapter(adapter);
+         //   adapter = new PendienteAdapter(items);
+         //   recycler.setAdapter(adapter);
+        //}
+    }
+
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_tareas_pendientes, container, false);
+        recycler = (RecyclerView) findViewById(R.id.reciclador);
+        System.out.println("recycler = " + recycler);
+        recycler.setHasFixedSize(true);
+
+        for (Pendiente item : items) {
+            System.out.println("item.getDescripcion() = " + item.getDescripcion());
+            System.out.println("item.getPrioridad() = " + item.getPrioridad());
         }
+
+        // Usar un administrador para LinearLayout
+        lManager = new LinearLayoutManager(this);
+        recycler.setLayoutManager(lManager);
+
+        // Crear un nuevo adaptador
+        adapter = new PendienteAdapter(items);
+
+        recycler.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        System.out.println("recycler = " + recycler.getAdapter());
+        recycler.setHovered(true);
+        System.out.println("recycler = " + recycler);
+
+        return view;
     }
 
     @Override
@@ -167,8 +197,9 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
 
     public List<Pendiente> getPendientes(){
         System.out.println("MAMA MIA!!!!");
+        String idUsuario = "578058319a09711100426fde";
         ConnectServer server = new ConnectServer();
-        server.execute();
+        server.execute(idUsuario);
         List<Pendiente> pendientes = new ArrayList<>();
 
         try {
@@ -176,6 +207,7 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
             Gson gson = new Gson();
             Type listType = new TypeToken<List<Pendiente>>(){}.getType();
             pendientes = gson.fromJson(json, listType);
+            System.out.println("pendientes = " + pendientes);
         } catch (Exception e){
             Log.e("Error", "No pude leer el JSON.");
         }
@@ -183,13 +215,15 @@ public class TabsActivity extends AppCompatActivity implements ScannerDelegate {
         return pendientes;
     }
 
-    private class ConnectServer extends AsyncTask<Void, Integer, String> {
+    private class ConnectServer extends AsyncTask<String, Integer, String> {
         @Override
-        protected String doInBackground(Void... voids) {
-            String json = ReadJson.read(URL_PENDIENTE);
+        protected String doInBackground(String... parameters) {
+            System.out.println("parameters[0] = " + parameters[0]);
+            String json = ReadJson.readTODOS(parameters[0]);
             System.out.println("json = " + json);
             return json;
         }
+
     }
 
 
