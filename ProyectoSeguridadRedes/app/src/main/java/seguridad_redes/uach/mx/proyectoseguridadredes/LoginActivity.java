@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -118,6 +120,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
         getSupportActionBar().hide();
+
+        try {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = settings.edit();
+            String email = settings.getString("email", "");
+            String password = settings.getString("password", "");
+            if (!email.isEmpty() && !password.isEmpty()) {
+                final Usuario usuario = getUsuario(email, password);
+                if(usuario != null && usuario.getNombre() != null){
+                    ejecutar(usuario);
+                    super.onPause();
+                    finish();
+                    System.out.println("[Sesión recuperada]");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("getUsuario Error", e.getMessage());
+        }
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
@@ -297,7 +318,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public void ejecutar(Usuario usuario) {
         Intent i = new Intent(this, TabsActivity.class);
-//        Intent i = new Intent(this, MainActivity.class);
         i.putExtra("nombre", usuario.getNombre());
         i.putExtra("paterno", usuario.getPaterno());
         i.putExtra("materno", usuario.getMaterno());
@@ -316,6 +336,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Gson gson = new Gson();
                 Type listType = new TypeToken<Usuario>(){}.getType();
                 usuario = gson.fromJson(json, listType);
+                try {
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("email", correo);
+                    editor.putString("password", pass);
+                    editor.commit();
+                    System.out.println("[Sesión guardada]");
+                } catch (Exception e) {
+                    Log.e("getUsuario Error", e.getMessage());
+                }
             }
 
         } catch (Exception e){
