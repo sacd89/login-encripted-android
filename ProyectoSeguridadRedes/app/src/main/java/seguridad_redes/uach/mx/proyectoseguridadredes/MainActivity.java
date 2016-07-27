@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -72,26 +74,23 @@ public class MainActivity extends AppCompatActivity implements ScannerDelegate {
             }
         });
         System.out.println("mUrls = " + mUrls.size());
-        for (Url url : mUrls) {
-            String str = url.getUrl().toString();
-            System.out.println("str = " + str);
-            if (str.equals("http://bit.ly/2a2QDMc")) {
+            for (Url url : mUrls) {
+                String str = url.getUrl().toString();
                 URL_PENDIENTE = str;
                 pendientes = getPendientes();
-                ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
-                        android.R.layout.activity_list_item, android.R.id.text1, pendientes);
-                this.lstVwUsuarios.setAdapter(adapter);
+                if (pendientes != null) {
+                    ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
+                            android.R.layout.activity_list_item, android.R.id.text1, pendientes);
+                    this.lstVwUsuarios.setAdapter(adapter);
+                }
+                System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
             }
-            System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
-
-        }
     }
 
-    public List<Pendiente> getPendientes(){
+    public List<Pendiente> getPendientes() {
         ConnectServer server = new ConnectServer();
         server.execute();
         List<Pendiente> pendientes = new ArrayList<>();
-
         try {
             String json = server.get();
             Gson gson = new Gson();
@@ -99,16 +98,26 @@ public class MainActivity extends AppCompatActivity implements ScannerDelegate {
             pendientes = gson.fromJson(json, listType);
         } catch (Exception e){
             Log.e("Error", "No pude leer el JSON.");
+            pendientes = null;
         }
-
         return pendientes;
     }
 
     private class ConnectServer extends AsyncTask<Void, Integer, String> {
         @Override
         protected String doInBackground(Void... voids) {
-            String json = ReadJson.read(URL_PENDIENTE);
-            System.out.println("json = " + json);
+            String json = "{}";
+            try {
+                java.net.URL newUrl = new URL(URL_PENDIENTE);
+                final HttpURLConnection urlConnection = (HttpURLConnection) newUrl.openConnection();
+                urlConnection.setInstanceFollowRedirects(false);
+                final String location = urlConnection.getHeaderField("location");
+                json = ReadJson.read(URL_PENDIENTE);
+                System.out.println("json = " + json);
+            } catch (Exception e) {
+                json = "{}";
+                System.out.println("ConnectServer error = " + e);
+            }
             return json;
         }
     }
