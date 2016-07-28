@@ -1,5 +1,7 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +23,13 @@ public class PendienteAdapter extends RecyclerView.Adapter<PendienteAdapter.Pend
     public static class PendienteViewHolder extends RecyclerView.ViewHolder {
         // Campos respectivos de un item
         private TextView titulo;
+        private TextView cvPendientes;
 
 
         public PendienteViewHolder(View v) {
             super(v);
             titulo = (TextView) v.findViewById(R.id.titulo);
+            cvPendientes = (TextView) v.findViewById(R.id.color);
         }
 
 
@@ -51,6 +55,14 @@ public class PendienteAdapter extends RecyclerView.Adapter<PendienteAdapter.Pend
 
     @Override
     public void onBindViewHolder(PendienteViewHolder viewHolder, int i) {
+        System.out.println("items.get(i).getPrioridad().getClass() = " + items.get(i).getPrioridad().getClass());
+        if(items.get(i).getPrioridad().equals(1)){
+            viewHolder.cvPendientes.setBackgroundColor(Color.parseColor("#d32f2f"));
+        }else if(items.get(i).getPrioridad().equals(2)){
+            viewHolder.cvPendientes.setBackgroundColor(Color.parseColor("#ffb74d"));
+        }else{
+            viewHolder.cvPendientes.setBackgroundColor(Color.parseColor("#fff176"));
+        }
         System.out.println("items.get(i).getDescripcion() = " + items.get(i).getDescripcion());
         viewHolder.titulo.setText(items.get(i).getDescripcion());
         System.out.println("Integer.toString(items.get(i).getPrioridad()) = " + Integer.toString(items.get(i).getPrioridad()));
