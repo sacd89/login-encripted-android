@@ -1,10 +1,9 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -113,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements ScannerDelegate {
                 urlConnection.setInstanceFollowRedirects(false);
                 final String location = urlConnection.getHeaderField("location");
                 json = ReadJson.read(URL_PENDIENTE);
-                System.out.println("json = " + json);
             } catch (Exception e) {
                 json = "{}";
                 System.out.println("ConnectServer error = " + e);

@@ -37,7 +37,6 @@ public class ReadJson {
             URL ruta = new URL(ReadJson.URL_TODOS + "/" + idUsuario);
             HttpURLConnection con = (HttpURLConnection) ruta.openConnection();
             json = transformBuffer(con.getInputStream()).toString();
-            System.out.println("json = " + json);
         }catch (Exception ex){
             Log.w("Error", "No se puede leer el servicio.");
             json = "null";

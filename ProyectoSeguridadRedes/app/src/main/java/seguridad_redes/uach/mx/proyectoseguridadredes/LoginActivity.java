@@ -1,25 +1,15 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,26 +27,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.SSLContext;
-
 import seguridad_redes.uach.mx.proyectoseguridadredes.models.Usuario;
 import seguridad_redes.uach.mx.proyectoseguridadredes.utils.ReadJson;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -157,7 +137,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() throws MalformedURLException {
-
 
         // Reset errors.
         mEmailView.setError(null);
@@ -301,6 +280,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         i.putExtra("nombre", usuario.getNombre());
         i.putExtra("paterno", usuario.getPaterno());
         i.putExtra("materno", usuario.getMaterno());
+        i.putExtra("idUsuario", usuario.get_id());
         startActivity(i);
     }
 
@@ -316,6 +296,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Gson gson = new Gson();
                 Type listType = new TypeToken<Usuario>(){}.getType();
                 usuario = gson.fromJson(json, listType);
+
             }
 
         } catch (Exception e){
