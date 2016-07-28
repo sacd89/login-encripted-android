@@ -1,7 +1,8 @@
 <android.support.v7.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/reciclador"
+    android:id="@+id/recicladorPendientes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    android:scrollbars="none" />
+    android:scrollbars="none"
+    />

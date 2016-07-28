@@ -42,19 +42,13 @@ import seguridad_redes.uach.mx.proyectoseguridadredes.utils.ReadJson;
 
 public class TabsActivity extends AppCompatActivity {//implements ScannerDelegate {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    public static String usuario;
+    private static ViewPagerAdapter adapter;
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    ScannerDelegate a = new ScannerDelegate() {
+    private int REQUEST_ENABLE_BT = 1;
+    private String usuario;
+
+    /*ScannerDelegate a = new ScannerDelegate() {
         @Override
         public void eddytoneNearbyDidChange() {
             mUrls = Arrays.asList(Scanner.nearbyUrls());
@@ -125,137 +119,65 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                 //e.adapter.notifyDataSetChanged();
             }
         }
-    };
-    private int REQUEST_ENABLE_BT = 1;
-    public static List<Pendiente> items = new ArrayList<>();
-    private BeaconAdapter mBeaconAdapter;
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private List<Url> mUrls = new ArrayList<>();
-    public static String URL_PENDIENTE;
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabs);
-        //System.out.println("mBluetoothAdapter = " + mBluetoothAdapter);
+
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-        Global.logging = true;
-        Global.expireTimer = 30000;
-        Scanner.start(a);
-        final int[] ICONS = new int[]{
-                R.drawable.ic_assignment_white_24dp,
-                R.drawable.ic_assignment_turned_in_white_24dp
-        };
+
+        //Global.logging = true;
+        //Global.expireTimer = 30000;
+        //Scanner.start(a);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        tabLayout.getTabAt(0).setIcon(ICONS[0]);
-        tabLayout.getTabAt(1).setIcon(ICONS[1]);
-        //tabLayout.getTabAt(2).setIcon(ICONS[2]);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Agregar Tarea Nueva", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         Bundle bundle = getIntent().getExtras();
         usuario = bundle.getString("nombre") + " " +
                 bundle.getString("paterno") + " " + bundle.getString("materno");
         System.out.println("usuario = " + usuario);
         getSupportActionBar().setTitle(usuario);
-        //items = getPendientes(bundle.getString("idUsuario"));
-        //if(items == null){
-        //    Toast.makeText(this,"No tienes tareas pendientes", Toast.LENGTH_LONG);
-        //}else {
-        //    //for (Pendiente item : items) {
-        //    //    items.add(new Pendiente());
-        //    //}
-        //
-            //items = new ArrayList<>();
-            //items.add(new Pendiente("Hacer popo", "26/07/16", 1, false));
 
-            // Obtener el Recycler
-        //    recycler = (RecyclerView) findViewById(R.id.reciclador);
-        //    System.out.println("recycler = " + recycler);
-        //    recycler.setHasFixedSize(true);
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        setupViewPager(mViewPager);
 
-            // Usar un administrador para LinearLayout
-            //lManager = new LinearLayoutManager(this);
-        //    recycler.setLayoutManager(lManager);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
-            // Crear un nuevo adaptador
-         //   adapter = new PendienteAdapter(items);
-         //   recycler.setAdapter(adapter);
-        //}
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_assignment_white_24dp);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_assignment_turned_in_white_24dp);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
     }
 
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tareas_pendientes, container, false);
-
-        return view;
+    //Setting View Pager
+    private void setupViewPager(ViewPager viewPager) {
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFrag(new TareasPendientes());
+        adapter.addFrag(new TareasRealizadas());
+        viewPager.setAdapter(adapter);
     }
 
 
-    //public void eddytoneNearbyDidChange() {
-       // mUrls = Arrays.asList(Scanner.nearbyUrls());
-       // System.out.println("mBeaconAdapter = " + mBeaconAdapter);
-      //  runOnUiThread(new Runnable() {
-    //        @Override
-  //          public void run() {
-                //mBeaconAdapter.clear();
-//                System.out.println("WE MADE IT ONE TIME");
-                //mBeaconAdapter.addAll(mUrls);
-          //  }
-        //});
-
-        //Bundle bundle = getIntent().getExtras();
-
-        //System.out.println("mUrls = " + mUrls.size());
-        //if(items.isEmpty()){
-        //    for (Url url : mUrls) {
-      //          String str = url.getUrl().toString();
-    //            URL_PENDIENTE = str;
-  //              items = getPendientes(bundle.getString("idUsuario"));
-//                System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
-
-        //    }
-        //}
-//        for (Url url : mUrls) {
-//            String str = url.getUrl().toString();
-//            System.out.println("str = " + str);
-//            if (str.equals("http://bit.ly/2a2QDMc") || true) {
-//                URL_PENDIENTE = str;
-//                items = getPendientes();
-//                //ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
-//                //        android.R.layout.activity_list_item, android.R.id.text1, pendientes);
-//                //this.lstVwUsuarios.setAdapter(adapter);
-//            }
-//            System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
-//
-//        }
-    //
-    //
-    // }
+    //Return current fragment on basis of Position
+    public Fragment getFragment(int pos) {
+        return adapter.getItem(pos);
+    }
 
     public List<Pendiente> getPendientes(String idUsuario){
         //String idUsuario = "578058319a09711100426fde";
@@ -300,7 +222,6 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.main, menu);
@@ -329,140 +250,5 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                 return super.onOptionsItemSelected(item);
 
         }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-        public RecyclerView recycler;
-        public static RecyclerView.Adapter adapter = new PendienteAdapter(items);;
-        public RecyclerView.LayoutManager lManager;
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-
-        @UiThread
-        protected void dataSetChanged() {
-            System.out.println("Entre aquiiiii");
-            this.adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            if(getArguments().getInt(ARG_SECTION_NUMBER)==1) {
-                View view = inflater.inflate(R.layout.fragment_tareas_pendientes, container, false);
-                recycler = (RecyclerView) view.findViewById(R.id.reciclador);
-                recycler.setHasFixedSize(true);
-
-                /*for (Pendiente item : TabsActivity.items) {
-                    System.out.println("item.getDescripcion() = " + item.getDescripcion());
-                    System.out.println("item.getPrioridad() = " + item.getPrioridad());
-                    TabsActivity.items.add(new Pendiente());
-                }*/
-
-                // Usar un administrador para LinearLayout
-                lManager = new LinearLayoutManager(getActivity());
-                recycler.setLayoutManager(lManager);
-
-                // Crear un nuevo adaptador
-                adapter = new PendienteAdapter(items);
-
-                recycler.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-                recycler.setHovered(true);
-                return view;
-            }else{
-                View view = inflater.inflate(R.layout.fragment_tareas_realizadas, container, false);
-                recycler = (RecyclerView) view.findViewById(R.id.reciclador);
-                recycler.setHasFixedSize(true);
-
-                /*for (Pendiente item : TabsActivity.items) {
-                    System.out.println("item.getDescripcion() = " + item.getDescripcion());
-                    System.out.println("item.getPrioridad() = " + item.getPrioridad());
-                    TabsActivity.items.add(new Pendiente());
-                }*/
-
-                // Usar un administrador para LinearLayout
-                lManager = new LinearLayoutManager(getActivity());
-                recycler.setLayoutManager(lManager);
-
-                // Crear un nuevo adaptador
-                adapter = new RealizadaAdapter(items);
-
-                recycler.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-                System.out.println("recycler = " + recycler.getAdapter());
-                recycler.setHovered(true);
-                System.out.println("recycler = " + recycler);
-                return view;
-            }/*else{
-                View rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
-                TextView user = (TextView) rootView.findViewById(R.id.txtVwMensaje);
-                TextView pendientes = (TextView) rootView.findViewById(R.id.txtVwPendientes);
-                TextView realizadas = (TextView) rootView.findViewById(R.id.txtVwRealizadas);
-                user.setText(usuario);
-                pendientes.setText("5\nPendientes");
-                realizadas.setText("2\nRealizadas");
-                return rootView;
-            }*/
-        }
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 2;
-        }
-
-       /* @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
-        }*/
     }
 }

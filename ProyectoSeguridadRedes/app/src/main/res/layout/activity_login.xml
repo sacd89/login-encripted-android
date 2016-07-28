@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@drawable/logo_ingenieria"
+        android:src="@drawable/andy_icon"
         android:layout_above="@+id/login_form"
         android:layout_alignParentEnd="true" />
 

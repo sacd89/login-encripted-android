@@ -63,7 +63,7 @@ public class Perfil extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        System.out.println(TabsActivity.usuario);
+        //System.out.println(TabsActivity.usuario);
     }
 
     @Override

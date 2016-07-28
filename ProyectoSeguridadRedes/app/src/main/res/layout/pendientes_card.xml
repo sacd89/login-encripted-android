@@ -3,10 +3,10 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardElevation="5dp"
+    card_view:cardElevation="10dp"
     card_view:contentPadding="15dp"
     card_view:cardUseCompatPadding="true"
-    android:foreground="?android:attr/selectableItemBackground"
+    android:background="@drawable/selector"
     android:id="@+id/cvPendientes">
 
     <LinearLayout
