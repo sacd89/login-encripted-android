@@ -8,4 +8,12 @@
         android:title="Delete"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/item_check"
+        android:icon="@drawable/ic_check_white_24dp"
+        android:title="Delete"
+        app:showAsAction="ifRoom"/>
+
+
+
 </menu>
