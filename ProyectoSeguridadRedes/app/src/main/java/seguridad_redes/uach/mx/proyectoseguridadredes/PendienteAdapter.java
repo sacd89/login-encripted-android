@@ -3,6 +3,7 @@ package seguridad_redes.uach.mx.proyectoseguridadredes;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,13 @@ import seguridad_redes.uach.mx.proyectoseguridadredes.models.Pendiente;
 public class PendienteAdapter extends RecyclerView.Adapter<PendienteAdapter.PendienteViewHolder> {
 
     private final List<Pendiente> items;
+    private SparseBooleanArray mSelectedItemsIds;
 
     public static class PendienteViewHolder extends RecyclerView.ViewHolder {
         // Campos respectivos de un item
         private TextView titulo;
         private TextView cvPendientes;
+
 
 
         public PendienteViewHolder(View v) {
@@ -38,6 +41,7 @@ public class PendienteAdapter extends RecyclerView.Adapter<PendienteAdapter.Pend
 
     public PendienteAdapter(List<Pendiente> items) {
         this.items = items;
+        mSelectedItemsIds = new SparseBooleanArray();
     }
 
     @Override
@@ -67,5 +71,38 @@ public class PendienteAdapter extends RecyclerView.Adapter<PendienteAdapter.Pend
         viewHolder.titulo.setText(items.get(i).getDescripcion());
         System.out.println("Integer.toString(items.get(i).getPrioridad()) = " + Integer.toString(items.get(i).getPrioridad()));
         //viewHolder.prioridad.setText(Integer.toString(items.get(i).getPrioridad()));
+    }
+
+    //Toggle selection methods
+    public void toggleSelection(int position) {
+        selectView(position, !mSelectedItemsIds.get(position));
+    }
+
+
+    //Remove selected selections
+    public void removeSelection() {
+        mSelectedItemsIds = new SparseBooleanArray();
+        notifyDataSetChanged();
+    }
+
+
+    //Put or delete selected position into SparseBooleanArray
+    public void selectView(int position, boolean value) {
+        if (value)
+            mSelectedItemsIds.put(position, value);
+        else
+            mSelectedItemsIds.delete(position);
+
+        notifyDataSetChanged();
+    }
+
+    //Get total selected count
+    public int getSelectedCount() {
+        return mSelectedItemsIds.size();
+    }
+
+    //Return all selected ids
+    public SparseBooleanArray getSelectedIds() {
+        return mSelectedItemsIds;
     }
 }
