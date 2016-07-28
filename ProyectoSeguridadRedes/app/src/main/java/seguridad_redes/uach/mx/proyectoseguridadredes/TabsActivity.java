@@ -2,8 +2,10 @@ package seguridad_redes.uach.mx.proyectoseguridadredes;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -246,6 +248,11 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
             case R.id.action_logout:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = settings.edit();
+                editor.remove("email");
+                editor.remove("password");
+                editor.apply();
                 Intent i = new Intent(this, LoginActivity.class);
                 startActivity(i);
                 TabsActivity.super.onPause();

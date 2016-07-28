@@ -341,7 +341,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("email", correo);
                     editor.putString("password", pass);
-                    editor.commit();
+                    editor.apply();
                     System.out.println("[Sesión guardada]");
                 } catch (Exception e) {
                     Log.e("getUsuario Error", e.getMessage());
