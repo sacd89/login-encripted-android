@@ -20,6 +20,7 @@ public class Pendiente_Adapter extends
     private ArrayList<Pendiente> arrayList;
     private Context context;
     private SparseBooleanArray mSelectedItemsIds;
+    private static int selectedPos = 0;
 
 
     public Pendiente_Adapter(Context context,
@@ -48,10 +49,13 @@ public class Pendiente_Adapter extends
         }else{
             holder.cvPendientes.setBackgroundColor(Color.parseColor("#fff176"));
         }
-
         //Setting text over text view
         holder.titulo.setText(arrayList.get(position).getDescripcion());
-        holder.colorCvPendientes.setSelected(mSelectedItemsIds.get(position, false));
+
+        holder.itemView
+                .setBackgroundColor(mSelectedItemsIds.get(position) ? 0x9934B5E4
+                        : Color.TRANSPARENT);
+
 
     }
 

@@ -4,7 +4,7 @@
     tools:context="seguridad_redes.uach.mx.proyectoseguridadredes.TabsActivity">
     <item
         android:id="@+id/action_logout"
-        android:icon="@mipmap/ic_logout_white_24dp"
+        android:icon="@drawable/ic_logout_white_24dp"
         android:title="@string/logout"
         app:showAsAction="ifRoom"/>
 </menu>

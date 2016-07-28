@@ -73,7 +73,8 @@ public class TareasPendientes extends Fragment {
             public void onClick(View view, int position) {
                 //If ActionMode not null select item
                 if (mActionMode != null)
-                    onListItemSelect(position);
+                onListItemSelect(position);
+                view.setSelected(true);
             }
 
             @Override
@@ -101,6 +102,7 @@ public class TareasPendientes extends Fragment {
 
         if (mActionMode != null) {
             //set action mode title on item selection
+
             mActionMode.setTitle(String.valueOf(adapter
                     .getSelectedCount()) + " Seleccionadas");
 
@@ -128,7 +130,6 @@ public class TareasPendientes extends Fragment {
 
             }
         }
-        Toast.makeText(getActivity(), selected.size() + " item deleted.", Toast.LENGTH_SHORT).show();//Show Toast
         mActionMode.finish();//Finish action mode after use
 
     }
