@@ -5,6 +5,7 @@ package seguridad_redes.uach.mx.proyectoseguridadredes.models;
  */
 public class Usuario {
 
+    private String _id;
     private String nombre;
     private String paterno;
     private String materno;
@@ -60,5 +61,13 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 }

@@ -38,7 +38,6 @@ public class RealizadaAdapter extends RecyclerView.Adapter<RealizadaAdapter.Real
 
     @Override
     public int getItemCount() {
-        System.out.println("items.size() = " + items.size());
         return items.size();
     }
 

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.UiThread;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -24,12 +25,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bluebite.android.eddystone.Global;
+import com.bluebite.android.eddystone.Scanner;
+import com.bluebite.android.eddystone.ScannerDelegate;
 import com.bluebite.android.eddystone.Url;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import seguridad_redes.uach.mx.proyectoseguridadredes.models.Pendiente;
@@ -49,8 +54,80 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
     private ViewPager mViewPager;
     public static String usuario;
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    ScannerDelegate a = new ScannerDelegate() {
+        @Override
+        public void eddytoneNearbyDidChange() {
+            mUrls = Arrays.asList(Scanner.nearbyUrls());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //mBeaconAdapter.clear();
+                    System.out.println("WE MADE IT ONE TIME");
+                    //mBeaconAdapter.addAll(mUrls);
+                }
+            });
+
+            Bundle bundle = getIntent().getExtras();
+
+
+            if(items.isEmpty()){
+                for (Url url : mUrls) {
+                    String str = url.getUrl().toString();
+                    URL_PENDIENTE = str;
+                    items = getPendientes(bundle.getString("idUsuario"));
+                    System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
+
+
+                }
+                for(Fragment f : getSupportFragmentManager().getFragments()){
+                    PlaceholderFragment e = (PlaceholderFragment) getSupportFragmentManager().findFragmentById(f.getId());
+
+                    System.out.println("e.adapter.getItemCount() = " + e.adapter);
+                    e.adapter = new PendienteAdapter(items);
+
+                    e.recycler.setAdapter(new RecyclerView.Adapter() {
+                        @Override
+                        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                            return null;
+                        }
+
+                        @Override
+                        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+                        }
+
+                        @Override
+                        public int getItemCount() {
+                            return 0;
+                        }
+                    });
+                    e.recycler.setHovered(true);
+                    e.recycler.setHasFixedSize(true);
+                    e.adapter.notifyDataSetChanged();
+                    Bundle bundleActivity = new Bundle();
+                    e.onSaveInstanceState(bundleActivity);
+                    e.onPause();
+                    e.onStop();
+                    e.onCreate(bundleActivity);
+                    e.onStart();
+                    e.onResume();
+                    e.getActivity().onContentChanged();
+
+
+                }
+                System.out.println("mSectionsPagerAdapter = " + mSectionsPagerAdapter);
+
+
+                //List<PlaceholderFragment> fragments = (List<PlaceholderFragment>) getSupportFragmentManager().getFragments();
+
+                //System.out.println("e = " + e);
+                //System.out.println("e.recycler = " + e.recycler);
+                //e.adapter.notifyDataSetChanged();
+            }
+        }
+    };
     private int REQUEST_ENABLE_BT = 1;
-    public static List<Pendiente> items;
+    public static List<Pendiente> items = new ArrayList<>();
     private BeaconAdapter mBeaconAdapter;
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<Url> mUrls = new ArrayList<>();
@@ -65,9 +142,9 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-        //Global.logging = true;
-        //Global.expireTimer = 30000;
-        //Scanner.start(this);
+        Global.logging = true;
+        Global.expireTimer = 30000;
+        Scanner.start(a);
         final int[] ICONS = new int[]{
                 R.drawable.ic_assignment_white_24dp,
                 R.drawable.ic_assignment_turned_in_white_24dp
@@ -104,14 +181,7 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                 bundle.getString("paterno") + " " + bundle.getString("materno");
         System.out.println("usuario = " + usuario);
         getSupportActionBar().setTitle(usuario);
-        System.out.println("getPendientes() = " + getPendientes());
-        for(int i = 0; i<getPendientes().size(); i++){
-            if(getPendientes().get(i) == null){
-                getPendientes().remove(getPendientes().get(i));
-            }
-        }
-        items = getPendientes();
-        System.out.println("items tabsActi = " + items);
+        //items = getPendientes(bundle.getString("idUsuario"));
         //if(items == null){
         //    Toast.makeText(this,"No tienes tareas pendientes", Toast.LENGTH_LONG);
         //}else {
@@ -145,32 +215,31 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
         return view;
     }
 
-    /*@Override
-    public void eddytoneNearbyDidChange() {
-        mUrls = Arrays.asList(Scanner.nearbyUrls());
-        System.out.println("mBeaconAdapter = " + mBeaconAdapter);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //mBeaconAdapter.clear();
-                System.out.println("WE MADE IT ONE TIME");
-                //mBeaconAdapter.addAll(mUrls);
-            }
-        });
-        
-        System.out.println("mUrls = " + mUrls.size());
-        for (Url url : mUrls) {
-            String str = url.getUrl().toString();
-            URL_PENDIENTE = str;
-            items = getPendientes();
-            //if (items != null) {
-             //   ArrayAdapter<Pendiente> adapter = new ArrayAdapter<Pendiente>(this,
-               //         android.R.layout.activity_list_item, android.R.id.text1, items);
-//                this.lstVwUsuarios.setAdapter(adapter);
-            //}
-            System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
 
-        }
+    //public void eddytoneNearbyDidChange() {
+       // mUrls = Arrays.asList(Scanner.nearbyUrls());
+       // System.out.println("mBeaconAdapter = " + mBeaconAdapter);
+      //  runOnUiThread(new Runnable() {
+    //        @Override
+  //          public void run() {
+                //mBeaconAdapter.clear();
+//                System.out.println("WE MADE IT ONE TIME");
+                //mBeaconAdapter.addAll(mUrls);
+          //  }
+        //});
+
+        //Bundle bundle = getIntent().getExtras();
+
+        //System.out.println("mUrls = " + mUrls.size());
+        //if(items.isEmpty()){
+        //    for (Url url : mUrls) {
+      //          String str = url.getUrl().toString();
+    //            URL_PENDIENTE = str;
+  //              items = getPendientes(bundle.getString("idUsuario"));
+//                System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
+
+        //    }
+        //}
 //        for (Url url : mUrls) {
 //            String str = url.getUrl().toString();
 //            System.out.println("str = " + str);
@@ -184,11 +253,12 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
 //            System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
 //
 //        }
-    }*/
+    //
+    //
+    // }
 
-    public List<Pendiente> getPendientes(){
-        System.out.println("MAMA MIA!!!!");
-        String idUsuario = "578058319a09711100426fde";
+    public List<Pendiente> getPendientes(String idUsuario){
+        //String idUsuario = "578058319a09711100426fde";
         ConnectServer server = new ConnectServer();
         server.execute(idUsuario);
         List<Pendiente> pendientes = new ArrayList<>();
@@ -270,9 +340,9 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-        private RecyclerView recycler;
-        private RecyclerView.Adapter adapter;
-        private RecyclerView.LayoutManager lManager;
+        public RecyclerView recycler;
+        public static RecyclerView.Adapter adapter = new PendienteAdapter(items);;
+        public RecyclerView.LayoutManager lManager;
 
         public PlaceholderFragment() {
         }
@@ -289,21 +359,19 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
             return fragment;
         }
 
+
+        @UiThread
+        protected void dataSetChanged() {
+            System.out.println("Entre aquiiiii");
+            this.adapter.notifyDataSetChanged();
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             if(getArguments().getInt(ARG_SECTION_NUMBER)==1) {
                 View view = inflater.inflate(R.layout.fragment_tareas_pendientes, container, false);
-                List<Pendiente> items = new ArrayList<>();
-
-                items.add(new Pendiente("Terminar Proyect", 1));
-                items.add(new Pendiente("Estudiar para examen", 1));
-                items.add(new Pendiente("Ir al parque", 2));
-                items.add(new Pendiente("Hacer popo", 3));
-                items.add(new Pendiente("Ver tele", 3));
                 recycler = (RecyclerView) view.findViewById(R.id.reciclador);
-                c
-                System.out.println("recycler = " + recycler);
                 recycler.setHasFixedSize(true);
 
                 /*for (Pendiente item : TabsActivity.items) {
@@ -321,20 +389,11 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
 
                 recycler.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-                System.out.println("recycler = " + recycler.getAdapter());
                 recycler.setHovered(true);
-                System.out.println("recycler = " + recycler);
-
                 return view;
             }else{
                 View view = inflater.inflate(R.layout.fragment_tareas_realizadas, container, false);
-                List<Pendiente> items = new ArrayList<>();
-
-                items.add(new Pendiente("Hacer tarea", "11/04/16"));
-                items.add(new Pendiente("Estudiar para examen de chito", "04/03/16"));
-                items.add(new Pendiente("Recoger casa", "07/02/16"));
                 recycler = (RecyclerView) view.findViewById(R.id.reciclador);
-                System.out.println("recycler = " + recycler);
                 recycler.setHasFixedSize(true);
 
                 /*for (Pendiente item : TabsActivity.items) {
@@ -406,6 +465,4 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
             return null;
         }*/
     }
-
-
 }

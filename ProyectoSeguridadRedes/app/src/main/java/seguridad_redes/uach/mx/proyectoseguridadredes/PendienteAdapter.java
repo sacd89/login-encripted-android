@@ -1,7 +1,6 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
 import android.graphics.Color;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -22,11 +21,12 @@ public class PendienteAdapter extends RecyclerView.Adapter<PendienteAdapter.Pend
     private final List<Pendiente> items;
     private SparseBooleanArray mSelectedItemsIds;
 
+
     public static class PendienteViewHolder extends RecyclerView.ViewHolder {
         // Campos respectivos de un item
-        private TextView titulo;
-        private TextView cvPendientes;
-
+        public TextView titulo;
+        public TextView prioridad;
+        public TextView cvPendientes;
 
 
         public PendienteViewHolder(View v) {
