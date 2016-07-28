@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TaskMaster</string>
+    <string name="app_name">taskMaster</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Correo</string>
