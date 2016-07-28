@@ -1,5 +1,6 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +22,13 @@ public class RealizadaAdapter extends RecyclerView.Adapter<RealizadaAdapter.Real
         // Campos respectivos de un item
         public TextView titulo;
         public TextView fecha;
+        public TextView color;
 
         public RealizadaViewHolder(View v) {
             super(v);
             titulo = (TextView) v.findViewById(R.id.titulo);
             fecha = (TextView) v.findViewById(R.id.fecha);
+            color = (TextView) v.findViewById(R.id.color);
         }
     }
 
@@ -47,6 +50,7 @@ public class RealizadaAdapter extends RecyclerView.Adapter<RealizadaAdapter.Real
 
     @Override
     public void onBindViewHolder(RealizadaViewHolder viewHolder, int i) {
+        viewHolder.color.setBackgroundColor(Color.parseColor("#CDDC39"));
         viewHolder.titulo.setText(items.get(i).getDescripcion());
         viewHolder.fecha.setText(items.get(i).getFecha());
     }

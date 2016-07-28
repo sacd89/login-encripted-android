@@ -4,10 +4,12 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -98,6 +100,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
         getSupportActionBar().hide();
+
+        try {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = settings.edit();
+            String email = settings.getString("email", "");
+            String password = settings.getString("password", "");
+            if (!email.isEmpty() && !password.isEmpty()) {
+                final Usuario usuario = getUsuario(email, password);
+                if(usuario != null && usuario.getNombre() != null){
+                    ejecutar(usuario);
+                    super.onPause();
+                    finish();
+                    System.out.println("[Sesión recuperada]");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("getUsuario Error", e.getMessage());
+        }
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
@@ -137,6 +158,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() throws MalformedURLException {
+
 
         // Reset errors.
         mEmailView.setError(null);
@@ -296,7 +318,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Gson gson = new Gson();
                 Type listType = new TypeToken<Usuario>(){}.getType();
                 usuario = gson.fromJson(json, listType);
-
+                try {
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("email", correo);
+                    editor.putString("password", pass);
+                    editor.apply();
+                    System.out.println("[Sesión guardada]");
+                } catch (Exception e) {
+                    Log.e("getUsuario Error", e.getMessage());
+                }
             }
 
         } catch (Exception e){

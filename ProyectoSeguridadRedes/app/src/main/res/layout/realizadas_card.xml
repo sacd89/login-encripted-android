@@ -3,8 +3,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="4dp"
+    card_view:cardElevation="5dp"
+    card_view:contentPadding="15dp"
     card_view:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -12,14 +12,28 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/titulo"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/color"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/titulo"
+                android:layout_toRightOf="@+id/color"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp" />
+
+        </LinearLayout>
 
         <View
             android:layout_width="wrap_content"
