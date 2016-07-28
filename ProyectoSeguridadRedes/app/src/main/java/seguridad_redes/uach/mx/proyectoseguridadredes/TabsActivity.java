@@ -23,18 +23,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
-import com.bluebite.android.eddystone.Global;
-import com.bluebite.android.eddystone.Scanner;
-import com.bluebite.android.eddystone.ScannerDelegate;
 import com.bluebite.android.eddystone.Url;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import seguridad_redes.uach.mx.proyectoseguridadredes.models.Pendiente;
@@ -307,6 +302,7 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                 items.add(new Pendiente("Hacer popo", 3));
                 items.add(new Pendiente("Ver tele", 3));
                 recycler = (RecyclerView) view.findViewById(R.id.reciclador);
+                c
                 System.out.println("recycler = " + recycler);
                 recycler.setHasFixedSize(true);
 
@@ -328,6 +324,7 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                 System.out.println("recycler = " + recycler.getAdapter());
                 recycler.setHovered(true);
                 System.out.println("recycler = " + recycler);
+
                 return view;
             }else{
                 View view = inflater.inflate(R.layout.fragment_tareas_realizadas, container, false);
@@ -409,4 +406,6 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
             return null;
         }*/
     }
+
+
 }

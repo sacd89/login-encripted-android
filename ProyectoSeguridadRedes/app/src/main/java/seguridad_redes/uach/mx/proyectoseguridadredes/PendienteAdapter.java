@@ -15,20 +15,22 @@ import seguridad_redes.uach.mx.proyectoseguridadredes.models.Pendiente;
  */
 
 public class PendienteAdapter extends RecyclerView.Adapter<PendienteAdapter.PendienteViewHolder> {
-    private List<Pendiente> items;
-    private int count;
+
+    private final List<Pendiente> items;
 
     public static class PendienteViewHolder extends RecyclerView.ViewHolder {
         // Campos respectivos de un item
-        public TextView titulo;
-        public TextView prioridad;
+        private TextView titulo;
+
 
         public PendienteViewHolder(View v) {
             super(v);
             titulo = (TextView) v.findViewById(R.id.titulo);
-            prioridad = (TextView) v.findViewById(R.id.prioridad);
         }
+
+
     }
+
 
     public PendienteAdapter(List<Pendiente> items) {
         this.items = items;
@@ -52,6 +54,6 @@ public class PendienteAdapter extends RecyclerView.Adapter<PendienteAdapter.Pend
         System.out.println("items.get(i).getDescripcion() = " + items.get(i).getDescripcion());
         viewHolder.titulo.setText(items.get(i).getDescripcion());
         System.out.println("Integer.toString(items.get(i).getPrioridad()) = " + Integer.toString(items.get(i).getPrioridad()));
-        viewHolder.prioridad.setText(Integer.toString(items.get(i).getPrioridad()));
+        //viewHolder.prioridad.setText(Integer.toString(items.get(i).getPrioridad()));
     }
 }
