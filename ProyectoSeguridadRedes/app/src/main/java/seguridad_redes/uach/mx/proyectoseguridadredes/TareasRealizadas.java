@@ -39,24 +39,26 @@ public class TareasRealizadas extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         item_models = new ArrayList<>();
-        item_models.add(new Pendiente("popo", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("pipi", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
-        item_models.add(new Pendiente("caca", "11/12/13"));
+
 
         adapter = new Realizada_Adapter(getActivity(), item_models);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
+    public static RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public static void setRecyclerView(RecyclerView recyclerView) {
+        TareasRealizadas.recyclerView = recyclerView;
+    }
+
+    public static Realizada_Adapter getAdapter() {
+        return adapter;
+    }
+
+    public static void setAdapter(Realizada_Adapter adapter) {
+        TareasRealizadas.adapter = adapter;
+    }
 }

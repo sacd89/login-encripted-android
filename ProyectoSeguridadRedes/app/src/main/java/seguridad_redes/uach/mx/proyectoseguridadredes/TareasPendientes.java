@@ -1,6 +1,5 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -45,21 +43,7 @@ public class TareasPendientes extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         item_models = new ArrayList<>();
-        item_models.add(new Pendiente("asdfghmf", 1));
-        item_models.add(new Pendiente("caca", 2));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
-        item_models.add(new Pendiente("pipi", 3));
+
 
         adapter = new Pendiente_Adapter(getActivity(), item_models);
         recyclerView.setAdapter(adapter);
@@ -134,4 +118,19 @@ public class TareasPendientes extends Fragment {
 
     }
 
+    public static Pendiente_Adapter getAdapter() {
+        return adapter;
+    }
+
+    public static void setAdapter(Pendiente_Adapter adapter) {
+        TareasPendientes.adapter = adapter;
+    }
+
+    public static RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public static void setRecyclerView(RecyclerView recyclerView) {
+        TareasPendientes.recyclerView = recyclerView;
+    }
 }

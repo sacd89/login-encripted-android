@@ -6,24 +6,17 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.UiThread;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.bluebite.android.eddystone.Global;
 import com.bluebite.android.eddystone.Scanner;
@@ -42,15 +35,21 @@ import seguridad_redes.uach.mx.proyectoseguridadredes.utils.ReadJson;
 
 public class TabsActivity extends AppCompatActivity {//implements ScannerDelegate {
 
+    ArrayList<Pendiente> items = new ArrayList<>();
     private ViewPager mViewPager;
     private static ViewPagerAdapter adapter;
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private int REQUEST_ENABLE_BT = 1;
     private String usuario;
+    private TareasPendientes fragmentPendientes;
+    private TareasRealizadas fragmentRealizadas;
+    private List<Url> mUrls = new ArrayList<>();
 
-    /*ScannerDelegate a = new ScannerDelegate() {
+
+    ScannerDelegate a = new ScannerDelegate() {
         @Override
         public void eddytoneNearbyDidChange() {
+            System.out.println("items = " + items);
             mUrls = Arrays.asList(Scanner.nearbyUrls());
             runOnUiThread(new Runnable() {
                 @Override
@@ -67,59 +66,18 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
             if(items.isEmpty()){
                 for (Url url : mUrls) {
                     String str = url.getUrl().toString();
-                    URL_PENDIENTE = str;
                     items = getPendientes(bundle.getString("idUsuario"));
-                    System.out.println("URL_PENDIENTE After pedo = " + URL_PENDIENTE);
-
-
                 }
-                for(Fragment f : getSupportFragmentManager().getFragments()){
-                    PlaceholderFragment e = (PlaceholderFragment) getSupportFragmentManager().findFragmentById(f.getId());
-
-                    System.out.println("e.adapter.getItemCount() = " + e.adapter);
-                    e.adapter = new PendienteAdapter(items);
-
-                    e.recycler.setAdapter(new RecyclerView.Adapter() {
-                        @Override
-                        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                            return null;
-                        }
-
-                        @Override
-                        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-                        }
-
-                        @Override
-                        public int getItemCount() {
-                            return 0;
-                        }
-                    });
-                    e.recycler.setHovered(true);
-                    e.recycler.setHasFixedSize(true);
-                    e.adapter.notifyDataSetChanged();
-                    Bundle bundleActivity = new Bundle();
-                    e.onSaveInstanceState(bundleActivity);
-                    e.onPause();
-                    e.onStop();
-                    e.onCreate(bundleActivity);
-                    e.onStart();
-                    e.onResume();
-                    e.getActivity().onContentChanged();
-
-
-                }
-                System.out.println("mSectionsPagerAdapter = " + mSectionsPagerAdapter);
-
-
-                //List<PlaceholderFragment> fragments = (List<PlaceholderFragment>) getSupportFragmentManager().getFragments();
-
-                //System.out.println("e = " + e);
-                //System.out.println("e.recycler = " + e.recycler);
-                //e.adapter.notifyDataSetChanged();
             }
+            fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), items));
+            fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
+            fragmentPendientes.getAdapter().notifyDataSetChanged();
+
+            fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), items));
+            fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
+            fragmentRealizadas.getAdapter().notifyDataSetChanged();
         }
-    };*/
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,9 +89,10 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-        //Global.logging = true;
-        //Global.expireTimer = 30000;
-        //Scanner.start(a);
+        Global.logging = true;
+        Global.expireTimer = 30000;
+        Scanner.start(a);
+        System.out.println("MA ");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -168,8 +127,10 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
     //Setting View Pager
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new TareasPendientes());
-        adapter.addFrag(new TareasRealizadas());
+        fragmentPendientes = new TareasPendientes();
+        fragmentRealizadas = new TareasRealizadas();
+        adapter.addFrag(fragmentPendientes);
+        adapter.addFrag(fragmentRealizadas);
         viewPager.setAdapter(adapter);
     }
 
@@ -179,16 +140,15 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
         return adapter.getItem(pos);
     }
 
-    public List<Pendiente> getPendientes(String idUsuario){
-        //String idUsuario = "578058319a09711100426fde";
+    public ArrayList<Pendiente> getPendientes(String idUsuario){
         ConnectServer server = new ConnectServer();
         server.execute(idUsuario);
-        List<Pendiente> pendientes = new ArrayList<>();
+        ArrayList<Pendiente> pendientes = new ArrayList<>();
 
         try {
             String json = server.get();
             Gson gson = new Gson();
-            Type listType = new TypeToken<List<Pendiente>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<Pendiente>>(){}.getType();
             pendientes = gson.fromJson(json, listType);
         } catch (Exception e){
             Log.e("Error", "No pude leer el JSON.");
