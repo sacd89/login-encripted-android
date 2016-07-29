@@ -22,10 +22,14 @@ import com.bluebite.android.eddystone.Global;
 import com.bluebite.android.eddystone.Scanner;
 import com.bluebite.android.eddystone.ScannerDelegate;
 import com.bluebite.android.eddystone.Url;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +39,7 @@ import seguridad_redes.uach.mx.proyectoseguridadredes.utils.ReadJson;
 
 public class TabsActivity extends AppCompatActivity {//implements ScannerDelegate {
 
+    private Socket socket;
     ArrayList<Pendiente> items = new ArrayList<>();
     private ViewPager mViewPager;
     private static ViewPagerAdapter adapter;
@@ -68,14 +73,14 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                     String str = url.getUrl().toString();
                     items = getPendientes(bundle.getString("idUsuario"));
                 }
-            }
-            fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), items));
-            fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
-            fragmentPendientes.getAdapter().notifyDataSetChanged();
+                fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), items));
+                fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
+                fragmentPendientes.getAdapter().notifyDataSetChanged();
 
-            fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), items));
-            fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
-            fragmentRealizadas.getAdapter().notifyDataSetChanged();
+                fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), items));
+                fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
+                fragmentRealizadas.getAdapter().notifyDataSetChanged();
+            }
         }
     };
 
@@ -121,6 +126,36 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                         .setAction("Action", null).show();
             }
         });
+
+        try {
+            socket = IO.socket("https://task-master-seguridad.herokuapp.com");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                System.out.println("Se conecto");
+                socket.emit("echo", "hello");
+            }
+
+        }).on("recargarPendientes", new Emitter.Listener(){
+            @Override
+            public void call(Object... args) {
+                System.out.println("Respuesta de Socket");
+                items = new ArrayList<Pendiente>();
+
+            }
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                System.out.println("Se desconecto");
+            }
+
+        });
+        socket.connect();
 
     }
 

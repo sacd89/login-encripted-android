@@ -40,7 +40,6 @@ public class TareasRealizadas extends Fragment {
 
         item_models = new ArrayList<>();
 
-
         adapter = new Realizada_Adapter(getActivity(), item_models);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
