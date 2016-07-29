@@ -118,7 +118,7 @@ public class TareasPendientes extends Fragment {
         socket.connect();
         SparseBooleanArray selected = adapter
                 .getSelectedIds();//Get selected ids
-        for( String id :adapter.idItemSeleccionado){
+        for( String id : adapter.idItemSeleccionado){
             socket.emit("deletePendiente", id);
         }
         //Loop all selected ids
@@ -133,7 +133,8 @@ public class TareasPendientes extends Fragment {
 
         //    }
         //}
-        socket.disconnect();
+        //socket.disconnect();
+        adapter.idItemSeleccionado = new ArrayList<>();
         mActionMode.finish();//Finish action mode after use
 
     }

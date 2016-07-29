@@ -80,7 +80,9 @@ public class Pendiente_Adapter extends
     //Toggle selection methods
     public void toggleSelection(int position) {
         selectView(position, !mSelectedItemsIds.get(position));
+        idItemSeleccionado = new ArrayList<>();
         //Igualacion de id del item seleccionado
+        System.out.println("arrayList = " + arrayList.get(position).get_id());
         idItemSeleccionado.add(arrayList.get(position).get_id());
     }
 
