@@ -12,6 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import seguridad_redes.uach.mx.proyectoseguridadredes.models.Pendiente;
@@ -23,6 +27,7 @@ public class TareasPendientes extends Fragment {
     private static ArrayList<Pendiente> item_models;
     private static Pendiente_Adapter adapter;
     private ActionMode mActionMode;
+    Socket socket;
 
     public TareasPendientes() {
     }
@@ -43,7 +48,6 @@ public class TareasPendientes extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         item_models = new ArrayList<>();
-
 
         adapter = new Pendiente_Adapter(getActivity(), item_models);
         recyclerView.setAdapter(adapter);
@@ -74,6 +78,8 @@ public class TareasPendientes extends Fragment {
     private void onListItemSelect(int position) {
         adapter.toggleSelection(position);//Toggle the selection
 
+
+
         boolean hasCheckedItems = adapter.getSelectedCount() > 0;//Check if any items are already selected or not
 
 
@@ -89,6 +95,7 @@ public class TareasPendientes extends Fragment {
 
             mActionMode.setTitle(String.valueOf(adapter
                     .getSelectedCount()) + " Seleccionadas");
+            System.out.println("selectedID=============== = " + adapter.getSelectedIds());
 
         }
 
@@ -102,18 +109,31 @@ public class TareasPendientes extends Fragment {
 
     //Delete selected rows
     public void deleteRows() {
+        try {
+            socket = IO.socket("https://task-master-seguridad.herokuapp.com");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        socket.connect();
         SparseBooleanArray selected = adapter
                 .getSelectedIds();//Get selected ids
-
-        //Loop all selected ids
-        for (int i = (selected.size() - 1); i >= 0; i--) {
-            if (selected.valueAt(i)) {
-                //If current id is selected remove the item via key
-                item_models.remove(selected.keyAt(i));
-                adapter.notifyDataSetChanged();//notify adapter
-
-            }
+        for( String id :adapter.idItemSeleccionado){
+            socket.emit("deletePendiente", id);
         }
+        //Loop all selected ids
+        //for (int i = (selected.size() - 1); i >= 0; i--) {
+        //    System.out.println("selected.valueAt(i) = " + selected.valueAt(i));
+        //    if (selected.valueAt(i)) {
+        //        //If current id is selected remove the item via key
+        //        System.out.println("selected.keyAt(i) = " + selected.keyAt(i));
+        //        System.out.println("i = " + i);
+        //        item_models.remove(selected.keyAt(i));
+        //        adapter.notifyDataSetChanged();//notify adapter
+
+        //    }
+        //}
+        socket.disconnect();
         mActionMode.finish();//Finish action mode after use
 
     }
