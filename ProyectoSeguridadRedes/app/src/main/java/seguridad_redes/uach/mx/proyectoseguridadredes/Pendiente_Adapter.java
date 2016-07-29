@@ -21,6 +21,7 @@ public class Pendiente_Adapter extends
     private Context context;
     private SparseBooleanArray mSelectedItemsIds;
     private static int selectedPos = 0;
+    private String idItemSeleccionado;
 
 
     public Pendiente_Adapter(Context context,
@@ -78,6 +79,9 @@ public class Pendiente_Adapter extends
     //Toggle selection methods
     public void toggleSelection(int position) {
         selectView(position, !mSelectedItemsIds.get(position));
+        //Igualacion de id del item seleccionado
+        idItemSeleccionado = arrayList.get(position).get_id();
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!arrayList.get(position).get_id() = " + arrayList.get(position).get_id());
     }
 
 

@@ -50,6 +50,7 @@ public class Toolbar_ActionMode_Callback implements ActionMode.Callback {
                 //Check if current action mode is from ListView Fragment or RecyclerView Fragment
                     //If current fragment is recycler view fragment
                     Fragment recyclerFragment = new TabsActivity().getFragment(0);//Get recycler view fragment
+                System.out.println("AQUIII recyclerFragment = " + recyclerFragment);
                     if (recyclerFragment != null)
                         //If recycler fragment not null
                         ((TareasPendientes) recyclerFragment).deleteRows();//delete selected rows

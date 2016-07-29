@@ -74,6 +74,8 @@ public class TareasPendientes extends Fragment {
     private void onListItemSelect(int position) {
         adapter.toggleSelection(position);//Toggle the selection
 
+
+
         boolean hasCheckedItems = adapter.getSelectedCount() > 0;//Check if any items are already selected or not
 
 
@@ -89,6 +91,7 @@ public class TareasPendientes extends Fragment {
 
             mActionMode.setTitle(String.valueOf(adapter
                     .getSelectedCount()) + " Seleccionadas");
+            System.out.println("selectedID=============== = " + adapter.getSelectedIds());
 
         }
 
@@ -107,8 +110,11 @@ public class TareasPendientes extends Fragment {
 
         //Loop all selected ids
         for (int i = (selected.size() - 1); i >= 0; i--) {
+            System.out.println("selected.valueAt(i) = " + selected.valueAt(i));
             if (selected.valueAt(i)) {
                 //If current id is selected remove the item via key
+                System.out.println("selected.keyAt(i) = " + selected.keyAt(i));
+                System.out.println("i = " + i);
                 item_models.remove(selected.keyAt(i));
                 adapter.notifyDataSetChanged();//notify adapter
 

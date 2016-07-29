@@ -14,6 +14,16 @@ public class Pendiente {
      */
     String fecha;
 
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    private String _id;
+
     /**
      * {@code String} Nivel de prioridad para el Pendiente.
      */

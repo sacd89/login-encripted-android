@@ -68,14 +68,15 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                     String str = url.getUrl().toString();
                     items = getPendientes(bundle.getString("idUsuario"));
                 }
-            }
-            fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), items));
-            fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
-            fragmentPendientes.getAdapter().notifyDataSetChanged();
+                fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), items));
+                fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
+                fragmentPendientes.getAdapter().notifyDataSetChanged();
 
-            fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), items));
-            fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
-            fragmentRealizadas.getAdapter().notifyDataSetChanged();
+                fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), items));
+                fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
+                fragmentRealizadas.getAdapter().notifyDataSetChanged();
+            }
+
         }
     };
 
