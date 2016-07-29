@@ -12,6 +12,9 @@
     <string name="error_field_required">Este elemento es requerido.</string>
     <string name="logout">Cerrar Sesión</string>
     <string name="sesionIniciada">Has iniciado sesión como: </string>
+    <string name="eliminar">Eliminar</string>
+    <string name="terminar">Terminar</string>
+    <string name="tareaNueva">Agregar Tarea Nueva</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -83,11 +83,11 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                             sinTerminar.add(p);
                         }
                     }
-                    fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), items));
+                    fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), sinTerminar));
                     fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
                     fragmentPendientes.getAdapter().notifyDataSetChanged();
 
-                    fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), items));
+                    fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), terminadas));
                     fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
                     fragmentRealizadas.getAdapter().notifyDataSetChanged();
 
@@ -134,7 +134,7 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, getString(R.string.tareaNueva), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });

@@ -32,13 +32,13 @@ public class Pendiente {
     /**
      * {@code Boolean} Determina si ha sido terminado
      */
-    Boolean terminado;
+    Boolean terminada;
 
     /**
      * Constructor vacío.
      */
     public Pendiente () {
-        this.terminado = Boolean.FALSE;
+        this.terminada = Boolean.FALSE;
     }
 
     /**
@@ -53,7 +53,7 @@ public class Pendiente {
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.prioridad = prioridad;
-        this.terminado = terminado;
+        this.terminada = terminado;
     }
 
     public Pendiente(String descripcion, Integer prioridad){
@@ -126,7 +126,7 @@ public class Pendiente {
      * @return Boolean terminado
      */
     public Boolean getTerminado() {
-        return terminado;
+        return terminada;
     }
 
     /**
@@ -135,7 +135,7 @@ public class Pendiente {
      * @param terminado Boolean terminado
      */
     public void setTerminado(Boolean terminado) {
-        this.terminado = terminado;
+        this.terminada = terminado;
     }
 
     @Override
