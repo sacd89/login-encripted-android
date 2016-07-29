@@ -69,17 +69,29 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
 
 
             if(items.isEmpty()){
-                for (Url url : mUrls) {
-                    String str = url.getUrl().toString();
-                    items = getPendientes(bundle.getString("idUsuario"));
-                }
-                fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), items));
-                fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
-                fragmentPendientes.getAdapter().notifyDataSetChanged();
+                if(fragmentPendientes.getAdapter() != null && fragmentPendientes.getRecyclerView()!=null && fragmentRealizadas.getAdapter() != null && fragmentRealizadas.getRecyclerView()!=null){
+                    ArrayList<Pendiente> terminadas = new ArrayList<>();
+                    ArrayList<Pendiente> sinTerminar = new ArrayList<>();
+                    for (Url url : mUrls) {
+                        String str = url.getUrl().toString();
+                        items = getPendientes(bundle.getString("idUsuario"));
+                    }
+                    for(Pendiente p : items){
+                        if(p.getTerminado()){
+                            terminadas.add(p);
+                        } else {
+                            sinTerminar.add(p);
+                        }
+                    }
+                    fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), items));
+                    fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
+                    fragmentPendientes.getAdapter().notifyDataSetChanged();
 
-                fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), items));
-                fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
-                fragmentRealizadas.getAdapter().notifyDataSetChanged();
+                    fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), items));
+                    fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
+                    fragmentRealizadas.getAdapter().notifyDataSetChanged();
+
+                }
             }
         }
     };

@@ -44,12 +44,13 @@ public class Toolbar_ActionMode_Callback implements ActionMode.Callback {
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        Fragment recyclerFragment;
         switch (item.getItemId()) {
             case R.id.item_delete:
 
                 //Check if current action mode is from ListView Fragment or RecyclerView Fragment
                     //If current fragment is recycler view fragment
-                    Fragment recyclerFragment = new TabsActivity().getFragment(0);//Get recycler view fragment
+                    recyclerFragment = new TabsActivity().getFragment(0);//Get recycler view fragment
                 System.out.println("AQUIII recyclerFragment = " + recyclerFragment);
                     if (recyclerFragment != null)
                         //If recycler fragment not null
@@ -57,6 +58,11 @@ public class Toolbar_ActionMode_Callback implements ActionMode.Callback {
                 break;
             case R.id.item_check:
                 Toast.makeText(context, "Tarea realizada", Toast.LENGTH_SHORT).show();//Show toast
+                recyclerFragment = new TabsActivity().getFragment(0);//Get recycler view fragment
+                System.out.println("AQUIII recyclerFragment = " + recyclerFragment);
+                if (recyclerFragment != null)
+                    //If recycler fragment not null
+                    ((TareasPendientes) recyclerFragment).updateRows();
                 mode.finish();//Finish action mode
                 break;
         }

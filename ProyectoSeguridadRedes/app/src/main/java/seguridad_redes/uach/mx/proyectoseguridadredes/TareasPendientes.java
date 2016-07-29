@@ -121,19 +121,23 @@ public class TareasPendientes extends Fragment {
         for( String id : adapter.idItemSeleccionado){
             socket.emit("deletePendiente", id);
         }
-        //Loop all selected ids
-        //for (int i = (selected.size() - 1); i >= 0; i--) {
-        //    System.out.println("selected.valueAt(i) = " + selected.valueAt(i));
-        //    if (selected.valueAt(i)) {
-        //        //If current id is selected remove the item via key
-        //        System.out.println("selected.keyAt(i) = " + selected.keyAt(i));
-        //        System.out.println("i = " + i);
-        //        item_models.remove(selected.keyAt(i));
-        //        adapter.notifyDataSetChanged();//notify adapter
+        adapter.idItemSeleccionado = new ArrayList<>();
+        mActionMode.finish();//Finish action mode after use
+    }
 
-        //    }
-        //}
-        //socket.disconnect();
+    public void updateRows() {
+        try {
+            socket = IO.socket("https://task-master-seguridad.herokuapp.com");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        socket.connect();
+        SparseBooleanArray selected = adapter
+                .getSelectedIds();//Get selected ids
+        for( String id : adapter.idItemSeleccionado){
+            socket.emit("terminarPendiente", id);
+        }
         adapter.idItemSeleccionado = new ArrayList<>();
         mActionMode.finish();//Finish action mode after use
 
