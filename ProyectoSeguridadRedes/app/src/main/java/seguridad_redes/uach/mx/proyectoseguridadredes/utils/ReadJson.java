@@ -14,7 +14,8 @@ import java.net.URL;
  */
 public class ReadJson {
 
-    private final static String DOMAIN = "https://login-encripted.herokuapp.com";
+//    private final static String DOMAIN = "http://148.229.7.180:8080";
+    private final static String DOMAIN = "https://task-master-web.herokuapp.com";
     public final static String URL_LOGIN = String.format("%s/webservice", DOMAIN);
     public final static String URL_TODOS = String.format("%s/todos/user", DOMAIN);
 

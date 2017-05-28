@@ -110,7 +110,7 @@ public class TareasPendientes extends Fragment {
     //Delete selected rows
     public void deleteRows() {
         try {
-            socket = IO.socket("https://task-master-seguridad.herokuapp.com");
+            socket = IO.socket("https://task-master-web.herokuapp.com");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -127,7 +127,7 @@ public class TareasPendientes extends Fragment {
 
     public void updateRows() {
         try {
-            socket = IO.socket("https://task-master-seguridad.herokuapp.com");
+            socket = IO.socket("https://task-master-web.herokuapp.com");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

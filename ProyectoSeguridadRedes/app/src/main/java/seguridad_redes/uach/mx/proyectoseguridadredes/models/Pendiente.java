@@ -49,11 +49,12 @@ public class Pendiente {
      * @param prioridad {@code String} Nivel de prioridad para el Pendiente
      * @param terminado {@code Boolean} Determina si ha sido terminado o no el pendiente
      */
-    public Pendiente(String descripcion, String fecha, Integer prioridad, Boolean terminado) {
+    public Pendiente(String descripcion, String fecha, Integer prioridad, Boolean terminado, String id) {
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.prioridad = prioridad;
         this.terminada = terminado;
+        this._id = id;
     }
 
     public Pendiente(String descripcion, Integer prioridad){

@@ -324,6 +324,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("email", correo);
                     editor.putString("password", pass);
+                    editor.putString("nombre", usuario.getNombre());
+                    editor.putString("paterno", usuario.getPaterno());
+                    editor.putString("materno", usuario.getMaterno());
+                    editor.putString("id", usuario.get_id());
                     editor.apply();
                     System.out.println("[Sesión guardada]");
                 } catch (Exception e) {
@@ -338,7 +342,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return usuario;
     }
 
-    private class ConnectServer extends AsyncTask<String, Integer, String>{
+    public class ConnectServer extends AsyncTask<String, Integer, String>{
         @Override
         protected String doInBackground(String... parameters) {
             String json = ReadJson.logIn(parameters[0], parameters[1]);

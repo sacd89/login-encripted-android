@@ -1,9 +1,14 @@
 package seguridad_redes.uach.mx.proyectoseguridadredes;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,10 +54,6 @@ public class MainActivity extends AppCompatActivity implements ScannerDelegate {
         Bundle bundle = getIntent().getExtras();
         usuario = bundle.getString("nombre") + " " +
                        bundle.getString("paterno")+ " " + bundle.getString("materno");
-        System.out.println("usuario = " + usuario);
-        //mensaje = (TextView) findViewById(R.id.txtVwMensaje);
-        //mensaje.setText("Has iniciado sesión como: " + bundle.getString("nombre") + " " +
-        //        bundle.getString("paterno")+ " " + bundle.getString("materno"));
         ListView beaconListView = (ListView) findViewById(R.id.beaconListView);
         mBeaconAdapter = new BeaconAdapter(this, R.layout.beacon_list_item, mUrls);
         beaconListView.setAdapter(mBeaconAdapter);
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements ScannerDelegate {
                 mBeaconAdapter.addAll(mUrls);
             }
         });
-        System.out.println("mUrls = " + mUrls.size());
             for (Url url : mUrls) {
                 String str = url.getUrl().toString();
                 URL_PENDIENTE = str;
