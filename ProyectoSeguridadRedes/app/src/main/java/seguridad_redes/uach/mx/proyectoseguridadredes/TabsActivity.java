@@ -103,10 +103,10 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                 }
             } else {
 
-                fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
+//                fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
                 fragmentPendientes.getAdapter().notifyDataSetChanged();
 
-                fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
+//                fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
                 fragmentRealizadas.getAdapter().notifyDataSetChanged();
 
 //                ArrayList<Pendiente> terminadas = new ArrayList<>();
