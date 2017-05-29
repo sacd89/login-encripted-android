@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -113,19 +114,20 @@ public class AddPendienteActivity extends AppCompatActivity {
         }
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String usurioOwner = settings.getString("user_id", "");
+        String usurioOwner = settings.getString("id", "");
 
         descripcion = String.valueOf(descripcionTxt.getText());
         fecha = String.valueOf(datePickerTxt.getText());
         prioridad = Integer.parseInt(String.valueOf(prioridadTxt.getText()));
         terminada = false;
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$ = " + usurioOwner);
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$ = " + fecha);
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$ = " + terminada);
         Pendiente p = new Pendiente(descripcion,fecha,prioridad, terminada, usurioOwner);
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ = "+ p);
         socket.connect();
-        socket.emit("crearNuevoPendiente", p);
+        JsonObject json = new JsonObject();
+        json.addProperty("descripcion", descripcion);
+        json.addProperty("prioridad", prioridad);
+        json.addProperty("idUsuario", usurioOwner);
+        socket.emit("crearNuevoPendienteMovil", json.toString());
     }
 
 }

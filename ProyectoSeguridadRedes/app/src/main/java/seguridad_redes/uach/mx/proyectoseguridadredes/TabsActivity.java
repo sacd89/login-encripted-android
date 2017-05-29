@@ -59,18 +59,16 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
     ArrayList<Pendiente> sinTerminar = new ArrayList<>();
 
 
-
-
     ScannerDelegate a = new ScannerDelegate() {
         @Override
         public void eddytoneNearbyDidChange() {
             mUrls = Arrays.asList(Scanner.nearbyUrls());
 
-            if(items.isEmpty()){
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 String email = settings.getString("email", "");
                 String password = settings.getString("password", "");
                 String id = settings.getString("id", "");
+            if(items.isEmpty()){
 //                Usuario usuario = null;
 //                if (!email.isEmpty() && !password.isEmpty()) {
 //                    usuario = getUsuario(email, password);
@@ -78,8 +76,8 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
 
 
                 if(fragmentPendientes.getAdapter() != null && fragmentPendientes.getRecyclerView()!=null && fragmentRealizadas.getAdapter() != null && fragmentRealizadas.getRecyclerView()!=null){
-                    ArrayList<Pendiente> terminadas = new ArrayList<>();
-                    ArrayList<Pendiente> sinTerminar = new ArrayList<>();
+//                    ArrayList<Pendiente> terminadas = new ArrayList<>();
+//                    ArrayList<Pendiente> sinTerminar = new ArrayList<>();
                     for (Url url : mUrls) {
                         String str = url.getUrl().toString();
                         items = getPendientes(id);
@@ -102,29 +100,10 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
 
                 }
             } else {
-
-//                fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
                 fragmentPendientes.getAdapter().notifyDataSetChanged();
 
-//                fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
                 fragmentRealizadas.getAdapter().notifyDataSetChanged();
 
-//                ArrayList<Pendiente> terminadas = new ArrayList<>();
-//                ArrayList<Pendiente> sinTerminar = new ArrayList<>();
-//                for(Pendiente p : items){
-//                    if(p.getTerminado()){
-//                        terminadas.add(p);
-//                    } else {
-//                        sinTerminar.add(p);
-//                    }
-//                }
-//                fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), sinTerminar));
-//                fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
-//                fragmentPendientes.getAdapter().notifyDataSetChanged();
-//
-//                fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), terminadas));
-//                fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
-//                fragmentRealizadas.getAdapter().notifyDataSetChanged();
             }
         }
     };
