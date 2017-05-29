@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.ScanResult;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bluebite.android.eddystone.Beacon;
 import com.bluebite.android.eddystone.Global;
 import com.bluebite.android.eddystone.Scanner;
 import com.bluebite.android.eddystone.ScannerDelegate;
@@ -55,56 +57,70 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
     private TareasPendientes fragmentPendientes;
     private TareasRealizadas fragmentRealizadas;
     private List<Url> mUrls = new ArrayList<>();
-    ArrayList<Pendiente> terminadas = new ArrayList<>();
-    ArrayList<Pendiente> sinTerminar = new ArrayList<>();
 
 
     ScannerDelegate a = new ScannerDelegate() {
         @Override
         public void eddytoneNearbyDidChange() {
             mUrls = Arrays.asList(Scanner.nearbyUrls());
+            System.out.println("MURLSSSSSSSS = "+ mUrls);
+            if(!mUrls.isEmpty()){
 
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String email = settings.getString("email", "");
-                String password = settings.getString("password", "");
-                String id = settings.getString("id", "");
-            if(items.isEmpty()){
+                notificacionesBeacon();
+            }
+            if(mUrls.isEmpty()){
+                notificacionesNoBeacon();
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(items.isEmpty()){
+                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        String email = settings.getString("email", "");
+                        String password = settings.getString("password", "");
+                        String id = settings.getString("id", "");
 //                Usuario usuario = null;
 //                if (!email.isEmpty() && !password.isEmpty()) {
 //                    usuario = getUsuario(email, password);
 //                }
 
 
-                if(fragmentPendientes.getAdapter() != null && fragmentPendientes.getRecyclerView()!=null && fragmentRealizadas.getAdapter() != null && fragmentRealizadas.getRecyclerView()!=null){
-//                    ArrayList<Pendiente> terminadas = new ArrayList<>();
-//                    ArrayList<Pendiente> sinTerminar = new ArrayList<>();
-                    for (Url url : mUrls) {
-                        String str = url.getUrl().toString();
-                        items = getPendientes(id);
-                        System.out.println("items.size() = " + items.size());
-                    }
-                    for(Pendiente p : items){
-                        if(p.getTerminado()){
-                            terminadas.add(p);
-                        } else {
-                            sinTerminar.add(p);
+                        if(fragmentPendientes.getAdapter() != null && fragmentPendientes.getRecyclerView()!=null && fragmentRealizadas.getAdapter() != null && fragmentRealizadas.getRecyclerView()!=null){
+                            ArrayList<Pendiente> terminadas = new ArrayList<>();
+                            ArrayList<Pendiente> sinTerminar = new ArrayList<>();
+                            for (Url url : mUrls) {
+                                String str = url.getUrl().toString();
+                                items = getPendientes(id);
+                                System.out.println("items.size() = " + items.size());
+                            }
+                            for(Pendiente p : items){
+                                if(p.getTerminado()){
+                                    terminadas.add(p);
+                                } else {
+                                    sinTerminar.add(p);
+                                }
+                            }
+                            fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), sinTerminar));
+                            fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
+                            fragmentPendientes.getAdapter().notifyDataSetChanged();
+
+                            fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), terminadas));
+                            fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
+                            fragmentRealizadas.getAdapter().notifyDataSetChanged();
+
                         }
+                    } else {
+
+//                fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
+                        fragmentPendientes.getAdapter().notifyDataSetChanged();
+
+//                fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
+                        fragmentRealizadas.getAdapter().notifyDataSetChanged();
+
                     }
-                    fragmentPendientes.setAdapter(new Pendiente_Adapter(fragmentPendientes.getActivity(), sinTerminar));
-                    fragmentPendientes.getRecyclerView().setAdapter(fragmentPendientes.getAdapter());
-                    fragmentPendientes.getAdapter().notifyDataSetChanged();
-
-                    fragmentRealizadas.setAdapter(new Realizada_Adapter(fragmentRealizadas.getActivity(), terminadas));
-                    fragmentRealizadas.getRecyclerView().setAdapter(fragmentRealizadas.getAdapter());
-                    fragmentRealizadas.getAdapter().notifyDataSetChanged();
-
                 }
-            } else {
-                fragmentPendientes.getAdapter().notifyDataSetChanged();
+            });
 
-                fragmentRealizadas.getAdapter().notifyDataSetChanged();
-
-            }
         }
     };
 
@@ -164,6 +180,7 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
 
         try {
             socket = IO.socket("https://task-master-web.herokuapp.com");
+            notificacionesBeacon();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -174,13 +191,12 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
                 System.out.println("Se conecto");
                 socket.emit("echo", "hello");
             }
-
         }).on("recargarPendientes", new Emitter.Listener(){
             @Override
             public void call(Object... args) {
                 System.out.println("Respuesta de Socket");
                 //Notificacion
-                notificaciones();
+                notificacionesActualizacion();
                 items = new ArrayList<Pendiente>();
 
             }
@@ -196,7 +212,39 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
 
     }
 
-    public void notificaciones(){
+    public void notificacionesBeacon(){
+        int mId = 001;
+        NotificationCompat.Builder mBuilder = (android.support.v7.app.NotificationCompat.Builder)
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.andy_icon)
+                        .setAutoCancel(true)
+                        .setContentTitle("taskMaster")
+                        .setContentText("Tu lista de pendientes esta lista para visualizarse.");
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+
+            mNotificationManager.notify(mId, mBuilder.build());
+    }
+
+    public void notificacionesNoBeacon(){
+        int mId = 001;
+        NotificationCompat.Builder mBuilder = (android.support.v7.app.NotificationCompat.Builder)
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.andy_icon)
+                        .setAutoCancel(true)
+                        .setContentTitle("taskMaster")
+                        .setContentText("No se encontro beacon disponible.");
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+
+            mNotificationManager.notify(mId, mBuilder.build());
+
+    }
+
+
+    public void notificacionesActualizacion(){
         int mId = 001;
         NotificationCompat.Builder mBuilder = (android.support.v7.app.NotificationCompat.Builder)
                 new NotificationCompat.Builder(this)
