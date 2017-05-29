@@ -213,7 +213,7 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
     }
 
     public void notificacionesBeacon(){
-        int mId = 001;
+        int mId = 002;
         NotificationCompat.Builder mBuilder = (android.support.v7.app.NotificationCompat.Builder)
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.andy_icon)
@@ -228,7 +228,7 @@ public class TabsActivity extends AppCompatActivity {//implements ScannerDelegat
     }
 
     public void notificacionesNoBeacon(){
-        int mId = 001;
+        int mId = 002;
         NotificationCompat.Builder mBuilder = (android.support.v7.app.NotificationCompat.Builder)
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.andy_icon)
